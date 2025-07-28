@@ -5,28 +5,136 @@
 
 $(document).ready(function() {
     initializeHorrorFeatures();
-    setupContentWarnings();
-    setupSpoilerSystem();
-    setupDynamicNavigation();
     setupHorrorEffects();
-    setupUserPageCreation();
+    setupSearchEnhancements();
+    setupNavigationEffects();
+    setupDropdowns();
+    setupUserMenu();
 });
+
+function setupDropdowns() {
+    // Create category dropdown
+    createCategoryDropdown();
+    
+    // Create tools dropdown  
+    createToolsDropdown();
+    
+    // Add hover effects for dropdowns
+    $('.horror-nav-item').hover(
+        function() {
+            const dropdown = $(this).find('.nav-dropdown');
+            if (dropdown.length) {
+                dropdown.stop(true, true).slideDown(200);
+            }
+        },
+        function() {
+            const dropdown = $(this).find('.nav-dropdown');
+            if (dropdown.length) {
+                dropdown.stop(true, true).slideUp(200);
+            }
+        }
+    );
+}
+
+function createCategoryDropdown() {
+    // Find the Categories nav item and add dropdown
+    const categoriesLink = $('.horror-nav-item').filter(function() {
+        return $(this).text().includes('Categories');
+    });
+    
+    if (categoriesLink.length) {
+        categoriesLink.css('position', 'relative');
+        
+        const dropdown = $(`
+            <div class="nav-dropdown">
+                <a href="/wiki/Category:Horror_Movies">🎬 Horror Movies</a>
+                <a href="/wiki/Category:Horror_Books">📚 Horror Books</a>
+                <a href="/wiki/Category:Horror_Games">🎮 Horror Games</a>
+                <a href="/wiki/Category:Creepypasta">📝 Creepypasta</a>
+                <a href="/wiki/Category:Urban_Legends">🏚️ Urban Legends</a>
+                <a href="/wiki/Category:Horror_Characters">👹 Horror Characters</a>
+            </div>
+        `);
+        
+        categoriesLink.append(dropdown);
+    }
+}
+
+function createToolsDropdown() {
+    // Find tools section and make it a dropdown in navbar
+    const toolsList = $('#horror-sidebar .sidebar-list a');
+    
+    if (toolsList.length) {
+        const toolsDropdown = $('<div class="horror-nav-item tools-dropdown" style="position: relative;">🔧 Tools</div>');
+        const dropdown = $('<div class="nav-dropdown"></div>');
+        
+        toolsList.each(function() {
+            const link = $(this).clone();
+            dropdown.append(link);
+        });
+        
+        toolsDropdown.append(dropdown);
+        $('.horror-main-nav').append(toolsDropdown);
+    }
+}
+
+function setupUserMenu() {
+    // Enhanced user dropdown functionality
+    $('.horror-user-menu').hover(
+        function() {
+            $(this).find('.user-dropdown').stop(true, true).slideDown(200);
+        },
+        function() {
+            $(this).find('.user-dropdown').stop(true, true).slideUp(200);
+        }
+    );
+    
+    // Add user menu styling if not present
+    if ($('.horror-user-menu').length && !$('.user-dropdown').length) {
+        createUserDropdown();
+    }
+}
+
+function createUserDropdown() {
+    const userSection = $('.horror-user-section');
+    
+    // Check if user is logged in by looking for user links
+    const userLinks = userSection.find('a');
+    
+    if (userLinks.length > 0) {
+        const userName = userSection.text().trim();
+        
+        const userMenu = $(`
+            <div class="horror-user-menu">
+                <span class="user-name">👤 User Menu</span>
+                <div class="user-dropdown">
+                    <a href="/wiki/Special:Preferences">⚙️ Preferences</a>
+                    <a href="/wiki/Special:Watchlist">👁️ Watchlist</a>
+                    <a href="/wiki/Special:Contributions">📝 Contributions</a>
+                    <a href="/wiki/Special:Userlogout">🚪 Logout</a>
+                </div>
+            </div>
+        `);
+        
+        userSection.empty().append(userMenu);
+    }
+}
 
 function initializeHorrorFeatures() {
     console.log('🎃 Horror Wiki System Loaded');
     
-    // Add horror-specific body classes based on page content
+    // Add horror-specific body classes
+    $('body').addClass('horror-theme-active');
+    
+    // Detect content type and add appropriate classes
     detectContentType();
     
-    // Initialize rating interactions
-    setupRatingInteractions();
-    
-    // Add atmospheric sound effects (optional)
-    setupAtmosphericEffects();
+    // Initialize any interactive elements
+    setupInteractiveElements();
 }
 
 function detectContentType() {
-    const content = $('#mw-content-text').text().toLowerCase();
+    const content = $('#horror-content').text().toLowerCase();
     const body = $('body');
     
     // Add classes based on content keywords
@@ -44,447 +152,374 @@ function detectContentType() {
     }
 }
 
-function setupContentWarnings() {
-    $('.horror-content-warning').each(function() {
-        const $warning = $(this);
-        const $content = $warning.nextAll();
-        
-        // Initially hide content after warning
-        $content.hide();
-        
-        $warning.find('.warning-accept').click(function() {
-            $warning.slideUp(300, function() {
-                $content.fadeIn(500);
-            });
-            
-            // Store user preference
-            const warningType = $warning.data('warning-type');
-            localStorage.setItem('horror_warning_' + warningType, 'accepted');
-        });
-        
-        // Check if user has already accepted this type of warning
-        const warningType = $warning.data('warning-type');
-        if (localStorage.getItem('horror_warning_' + warningType) === 'accepted') {
-            $warning.hide();
-            $content.show();
-        }
-    });
-}
-
-function setupSpoilerSystem() {
-    $('.horror-spoiler').each(function() {
-        const $spoiler = $(this);
-        const $warning = $spoiler.find('.spoiler-warning');
-        const $content = $spoiler.find('.spoiler-content');
-        
-        $warning.click(function() {
-            if ($content.hasClass('revealed')) {
-                $content.removeClass('revealed').slideUp();
-                $warning.text('Click to reveal spoiler');
-            } else {
-                $content.addClass('revealed').slideDown();
-                $warning.text('Click to hide spoiler');
-                
-                // Add blood drip effect
-                addBloodDrip($spoiler);
-            }
-        });
-    });
-}
-
-function setupRatingInteractions() {
-    $('.rating-skull').hover(
+function setupInteractiveElements() {
+    // Add hover effects to navigation items
+    $('.horror-nav-item').hover(
         function() {
-            $(this).css('transform', 'scale(1.2) rotate(10deg)');
+            $(this).css('transform', 'translateY(-2px) scale(1.05)');
         },
         function() {
-            $(this).css('transform', 'scale(1) rotate(0deg)');
+            $(this).css('transform', 'translateY(0) scale(1)');
         }
     );
     
-    // Interactive rating system
-    $('.horror-rating-widget').each(function() {
-        const $widget = $(this);
-        
-        // Add click functionality to skulls for user ratings
-        $widget.find('.rating-skull').click(function() {
-            const $skull = $(this);
-            const $row = $skull.closest('.rating-row');
-            const rating = $skull.index() + 1;
-            
-            // Update visual rating
-            $row.find('.rating-skull').each(function(index) {
-                if (index < rating) {
-                    $(this).addClass('active');
-                } else {
-                    $(this).removeClass('active');
-                }
-            });
-            
-            // Save user rating (if logged in)
-            saveUserRating($row.find('.rating-label').text(), rating);
-        });
+    // Add click effects to buttons
+    $('.horror-search-btn, .horror-login-btn, .horror-register-btn').click(function() {
+        $(this).addClass('clicked');
+        setTimeout(() => {
+            $(this).removeClass('clicked');
+        }, 200);
     });
-}
-
-function setupDynamicNavigation() {
-    // Create horror page functionality
-    $('.horror-create-page').click(function(e) {
+    
+    // Smooth scrolling for internal links
+    $('a[href^="#"]').click(function(e) {
         e.preventDefault();
-        showCreatePageModal();
-    });
-    
-    // Add recently viewed pages to navigation
-    updateRecentlyViewed();
-    
-    // Add horror-specific search suggestions
-    enhanceSearchBox();
-}
-
-function showCreatePageModal() {
-    const modalHTML = `
-        <div id="horror-create-modal" class="horror-modal">
-            <div class="horror-modal-content">
-                <span class="horror-close">&times;</span>
-                <h2>🎭 Create Horror Page</h2>
-                <form id="horror-page-form">
-                    <div class="form-group">
-                        <label>Page Title:</label>
-                        <input type="text" id="page-title" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Content Type:</label>
-                        <select id="content-type">
-                            <option value="movie">Horror Movie</option>
-                            <option value="book">Horror Book</option>
-                            <option value="game">Horror Game</option>
-                            <option value="legend">Urban Legend</option>
-                            <option value="creepypasta">Creepypasta</option>
-                            <option value="character">Horror Character</option>
-                            <option value="location">Haunted Location</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Content Warnings:</label>
-                        <div class="warning-checkboxes">
-                            <label><input type="checkbox" value="gore"> Gore/Violence</label>
-                            <label><input type="checkbox" value="jump"> Jump Scares</label>
-                            <label><input type="checkbox" value="psychological"> Psychological</label>
-                            <label><input type="checkbox" value="disturbing"> Disturbing Content</label>
-                            <label><input type="checkbox" value="suicide"> Suicide/Self-Harm</label>
-                            <label><input type="checkbox" value="sexual"> Sexual Content</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label><input type="checkbox" id="add-to-nav"> Add to Navigation Menu</label>
-                    </div>
-                    <button type="submit" class="horror-btn">Create Page</button>
-                </form>
-            </div>
-        </div>
-    `;
-    
-    $('body').append(modalHTML);
-    
-    // Modal interactions
-    $('#horror-create-modal').fadeIn();
-    
-    $('.horror-close').click(function() {
-        $('#horror-create-modal').fadeOut(function() {
-            $(this).remove();
-        });
-    });
-    
-    $('#horror-page-form').submit(function(e) {
-        e.preventDefault();
-        createHorrorPage();
-    });
-}
-
-function createHorrorPage() {
-    const title = $('#page-title').val();
-    const contentType = $('#content-type').val();
-    const warnings = [];
-    const addToNav = $('#add-to-nav').is(':checked');
-    
-    $('.warning-checkboxes input:checked').each(function() {
-        warnings.push($(this).val());
-    });
-    
-    // Generate page template based on content type
-    const pageTemplate = generatePageTemplate(contentType, warnings);
-    
-    // Create the page URL
-    const pageUrl = mw.config.get('wgScript') + '?title=' + encodeURIComponent(title) + '&action=edit&preload=Template:' + contentType;
-    
-    // Add to navigation if requested
-    if (addToNav) {
-        addToCustomNavigation(title, pageUrl);
-    }
-    
-    // Redirect to edit page with template
-    window.location.href = pageUrl;
-}
-
-function generatePageTemplate(contentType, warnings) {
-    let template = '';
-    
-    // Add content warnings
-    if (warnings.length > 0) {
-        warnings.forEach(warning => {
-            template += `{{contentwarning|${warning}|Please be aware this content contains ${warning} elements}}\n\n`;
-        });
-    }
-    
-    // Add content-specific templates
-    switch(contentType) {
-        case 'movie':
-            template += `{{horrorrating|gore=3|fear=4|disturbing=2}}\n\n`;
-            template += `== Plot Summary ==\n\n== Cast ==\n\n== Production ==\n\n== Reception ==\n\n== Legacy ==\n\n`;
-            break;
-        case 'book':
-            template += `{{horrorrating|gore=2|fear=4|disturbing=3}}\n\n`;
-            template += `== Plot ==\n\n== Characters ==\n\n== Themes ==\n\n== Publication History ==\n\n== Adaptations ==\n\n`;
-            break;
-        case 'game':
-            template += `{{horrorrating|gore=3|fear=5|disturbing=3}}\n\n`;
-            template += `== Gameplay ==\n\n== Story ==\n\n== Development ==\n\n== Reception ==\n\n== Sequels ==\n\n`;
-            break;
-        default:
-            template += `{{horrorrating|gore=1|fear=2|disturbing=1}}\n\n`;
-            template += `== Description ==\n\n== History ==\n\n== Cultural Impact ==\n\n`;
-    }
-    
-    return template;
-}
-
-function addToCustomNavigation(title, url) {
-    // Store in localStorage for persistent navigation
-    let customNav = JSON.parse(localStorage.getItem('horror_custom_nav') || '[]');
-    customNav.push({title: title, url: url});
-    localStorage.setItem('horror_custom_nav', JSON.stringify(customNav));
-    
-    // Add to current page navigation
-    const navItem = `<li><a href="${url}" class="custom-horror-nav">${title}</a></li>`;
-    $('#p-navigation ul').append(navItem);
-}
-
-function updateRecentlyViewed() {
-    const currentPage = mw.config.get('wgPageName');
-    let recentPages = JSON.parse(localStorage.getItem('horror_recent_pages') || '[]');
-    
-    // Add current page to recent list
-    if (currentPage && !recentPages.includes(currentPage)) {
-        recentPages.unshift(currentPage);
-        recentPages = recentPages.slice(0, 5); // Keep only 5 recent pages
-        localStorage.setItem('horror_recent_pages', JSON.stringify(recentPages));
-    }
-    
-    // Add recent pages to navigation
-    if (recentPages.length > 0) {
-        const recentHTML = '<div class="portlet" id="p-recent"><h3>Recently Viewed</h3><div class="body"><ul>';
-        recentPages.forEach(page => {
-            recentHTML += `<li><a href="/wiki/${page}">${page.replace(/_/g, ' ')}</a></li>`;
-        });
-        recentHTML += '</ul></div></div>';
-        $('#mw-panel').append(recentHTML);
-    }
-}
-
-function enhanceSearchBox() {
-    const searchBox = $('#searchInput');
-    
-    // Add horror-specific search suggestions
-    const horrorTerms = [
-        'Horror Movies', 'Creepypasta', 'Urban Legends', 'Haunted Locations',
-        'Horror Games', 'Stephen King', 'Lovecraft', 'Zombie', 'Vampire',
-        'Ghost Stories', 'Slasher Films', 'Psychological Horror'
-    ];
-    
-    searchBox.autocomplete({
-        source: horrorTerms,
-        classes: {
-            "ui-autocomplete": "horror-autocomplete"
+        const target = $($(this).attr('href'));
+        if (target.length) {
+            $('html, body').animate({
+                scrollTop: target.offset().top - 20
+            }, 500);
         }
     });
 }
 
-function setupAtmosphericEffects() {
-    // Add subtle horror effects
-    addRandomGlitchEffect();
+function setupSearchEnhancements() {
+    const searchInput = $('#horror-searchInput');
+    
+    if (searchInput.length) {
+        // Add search suggestions for horror content
+        const horrorTerms = [
+            'Horror Movies', 'Creepypasta', 'Urban Legends', 'Haunted Locations',
+            'Horror Games', 'Stephen King', 'H.P. Lovecraft', 'Zombie', 'Vampire',
+            'Ghost Stories', 'Slasher Films', 'Psychological Horror'
+        ];
+        
+        // Simple autocomplete functionality
+        searchInput.on('input', function() {
+            const value = $(this).val().toLowerCase();
+            if (value.length > 2) {
+                const suggestions = horrorTerms.filter(term => 
+                    term.toLowerCase().includes(value)
+                );
+                
+                // Remove existing suggestions
+                $('.horror-search-suggestions').remove();
+                
+                if (suggestions.length > 0) {
+                    const suggestionsList = $('<div class="horror-search-suggestions"></div>');
+                    suggestions.slice(0, 5).forEach(suggestion => {
+                        const item = $(`<div class="suggestion-item">${suggestion}</div>`);
+                        item.click(function() {
+                            searchInput.val(suggestion);
+                            $('.horror-search-suggestions').remove();
+                        });
+                        suggestionsList.append(item);
+                    });
+                    searchInput.parent().append(suggestionsList);
+                }
+            } else {
+                $('.horror-search-suggestions').remove();
+            }
+        });
+        
+        // Hide suggestions when clicking outside
+        $(document).click(function(e) {
+            if (!$(e.target).closest('.horror-search-section').length) {
+                $('.horror-search-suggestions').remove();
+            }
+        });
+    }
+}
+
+function setupHorrorEffects() {
+    // Add subtle atmospheric effects
     setupScrollEffects();
-    addAmbientParticles();
+    addRandomGlitchEffect();
+    
+    // Add blood drip effect on certain interactions
+    $('.horror-nav-item').click(function() {
+        addBloodDrip($(this));
+    });
+}
+
+function setupScrollEffects() {
+    let ticking = false;
+    
+    $(window).scroll(function() {
+        if (!ticking) {
+            requestAnimationFrame(function() {
+                const scrolled = $(window).scrollTop();
+                
+                // Parallax effect for header
+                $('#horror-header').css('transform', `translateY(${scrolled * 0.1}px)`);
+                
+                // Fade in sidebar sections as they come into view
+                $('.horror-sidebar-section').each(function() {
+                    const elementTop = $(this).offset().top;
+                    const elementBottom = elementTop + $(this).outerHeight();
+                    const viewportTop = $(window).scrollTop();
+                    const viewportBottom = viewportTop + $(window).height();
+                    
+                    if (elementBottom > viewportTop && elementTop < viewportBottom) {
+                        $(this).addClass('in-view');
+                    }
+                });
+                
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+}
+
+function setupNavigationEffects() {
+    // Add pulsing effect to important navigation items
+    $('.horror-nav-item').each(function(index) {
+        const delay = index * 200;
+        $(this).css('animation-delay', delay + 'ms');
+    });
+    
+    // Add click tracking for popular pages
+    $('.horror-nav-item, .sidebar-list a').click(function() {
+        const pageName = $(this).text().trim();
+        updateRecentlyViewed(pageName);
+    });
 }
 
 function addRandomGlitchEffect() {
+    // Add occasional glitch effect (very subtle)
     setInterval(() => {
-        if (Math.random() < 0.01) { // 1% chance every second
+        if (Math.random() < 0.005) { // 0.5% chance every second
             $('body').addClass('glitch-effect');
             setTimeout(() => {
                 $('body').removeClass('glitch-effect');
-            }, 100);
+            }, 150);
         }
     }, 1000);
 }
 
-function setupScrollEffects() {
-    $(window).scroll(function() {
-        const scrolled = $(window).scrollTop();
-        const parallax = scrolled * 0.5;
+function addBloodDrip(element) {
+    if (Math.random() < 0.3) { // 30% chance
+        const drip = $('<div class="blood-drip">🩸</div>');
+        const rect = element[0].getBoundingClientRect();
         
-        // Parallax effect for background
-        $('body::before').css('transform', `translateY(${parallax}px)`);
+        drip.css({
+            position: 'fixed',
+            top: rect.top + rect.height,
+            left: rect.left + Math.random() * rect.width,
+            zIndex: 1000,
+            fontSize: '20px',
+            pointerEvents: 'none'
+        });
         
-        // Fade in elements as they come into view
-        $('.horror-rating-widget, .horror-content-warning').each(function() {
-            const elementTop = $(this).offset().top;
-            const elementBottom = elementTop + $(this).outerHeight();
-            const viewportTop = $(window).scrollTop();
-            const viewportBottom = viewportTop + $(window).height();
-            
-            if (elementBottom > viewportTop && elementTop < viewportBottom) {
-                $(this).addClass('in-view');
-            }
+        $('body').append(drip);
+        
+        drip.animate({
+            top: '+=' + (Math.random() * 100 + 50),
+            opacity: 0
+        }, 1500, function() {
+            $(this).remove();
         });
-    });
-}
-
-function addAmbientParticles() {
-    // Create floating particles for atmosphere
-    for (let i = 0; i < 10; i++) {
-        const particle = $('<div class="ambient-particle"></div>');
-        particle.css({
-            left: Math.random() * 100 + '%',
-            animationDelay: Math.random() * 10 + 's',
-            animationDuration: (Math.random() * 10 + 10) + 's'
-        });
-        $('body').append(particle);
     }
 }
 
-function addBloodDrip(element) {
-    const drip = $('<div class="blood-drip">🩸</div>');
-    drip.css({
-        position: 'absolute',
-        top: element.offset().top,
-        left: element.offset().left + Math.random() * element.width(),
-        zIndex: 1000
-    });
-    
-    $('body').append(drip);
-    
-    drip.animate({
-        top: '+=' + (Math.random() * 200 + 100),
-        opacity: 0
-    }, 2000, function() {
-        $(this).remove();
-    });
+function updateRecentlyViewed(pageName) {
+    try {
+        let recentPages = JSON.parse(localStorage.getItem('horror_recent_pages') || '[]');
+        
+        // Remove if already exists and add to front
+        recentPages = recentPages.filter(page => page !== pageName);
+        recentPages.unshift(pageName);
+        
+        // Keep only 5 recent pages
+        recentPages = recentPages.slice(0, 5);
+        
+        localStorage.setItem('horror_recent_pages', JSON.stringify(recentPages));
+    } catch (e) {
+        console.log('Could not update recently viewed pages');
+    }
 }
 
-function saveUserRating(category, rating) {
-    if (mw.user.isAnon()) return;
+function showNotification(message, type = 'info') {
+    const notification = $(`
+        <div class="horror-notification ${type}">
+            ${message}
+        </div>
+    `);
     
-    const pageId = mw.config.get('wgArticleId');
-    const userId = mw.user.getId();
-    
-    // AJAX call to save rating
-    $.ajax({
-        url: mw.util.wikiScript('api'),
-        type: 'POST',
-        data: {
-            action: 'horror-save-rating',
-            page_id: pageId,
-            user_id: userId,
-            category: category,
-            rating: rating,
-            format: 'json'
-        },
-        success: function(data) {
-            console.log('Rating saved successfully');
-            showNotification('Rating saved!', 'success');
-        },
-        error: function() {
-            showNotification('Failed to save rating', 'error');
-        }
-    });
-}
-
-function showNotification(message, type) {
-    const notification = $(`<div class="horror-notification ${type}">${message}</div>`);
     $('body').append(notification);
     
-    notification.fadeIn().delay(3000).fadeOut(function() {
+    notification.fadeIn(300).delay(3000).fadeOut(300, function() {
         $(this).remove();
     });
 }
 
-// CSS for additional effects
-const additionalCSS = `
+// CSS for effects and dropdowns (injected dynamically)
+const effectsCSS = `
+.clicked {
+    transform: scale(0.95) !important;
+    transition: transform 0.1s ease;
+}
+
 .glitch-effect {
     animation: glitch 0.1s;
 }
 
 @keyframes glitch {
     0% { transform: translate(0); }
-    20% { transform: translate(-2px, 2px); }
-    40% { transform: translate(-2px, -2px); }
-    60% { transform: translate(2px, 2px); }
-    80% { transform: translate(2px, -2px); }
+    20% { transform: translate(-1px, 1px); }
+    40% { transform: translate(-1px, -1px); }
+    60% { transform: translate(1px, 1px); }
+    80% { transform: translate(1px, -1px); }
     100% { transform: translate(0); }
 }
 
-.ambient-particle {
-    position: fixed;
-    width: 4px;
-    height: 4px;
-    background: rgba(139, 0, 0, 0.3);
-    border-radius: 50%;
-    animation: float-particle linear infinite;
-    pointer-events: none;
-    z-index: -1;
-}
-
-@keyframes float-particle {
-    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
-}
-
-.horror-modal {
+/* Navigation Dropdowns */
+.nav-dropdown {
     display: none;
-    position: fixed;
-    z-index: 9999;
+    position: absolute;
+    top: 100%;
     left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.8);
+    min-width: 200px;
+    background: linear-gradient(to bottom, var(--shadow-black), var(--mist-gray));
+    border: 2px solid var(--blood-red);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+    z-index: 1000;
 }
 
-.horror-modal-content {
-    background: linear-gradient(135deg, #0D0D0D, #1A0A0A);
-    margin: 5% auto;
-    padding: 20px;
-    border: 3px solid var(--blood-red);
-    border-radius: 10px;
-    width: 80%;
-    max-width: 600px;
+.nav-dropdown a {
+    display: block !important;
+    padding: 10px 15px !important;
+    color: var(--bone-white) !important;
+    text-decoration: none !important;
+    border-bottom: 1px solid rgba(139, 0, 0, 0.3) !important;
+    transition: all 0.3s ease !important;
+    font-size: 0.9em !important;
+}
+
+.nav-dropdown a:hover {
+    background: var(--blood-red) !important;
+    color: var(--bone-white) !important;
+    padding-left: 25px !important;
+    text-shadow: 0 0 5px var(--bone-white) !important;
+}
+
+.nav-dropdown a:last-child {
+    border-bottom: none !important;
+    border-radius: 0 0 6px 6px;
+}
+
+/* User Dropdown */
+.horror-user-menu {
+    position: relative;
+    cursor: pointer;
+}
+
+.user-name {
     color: var(--bone-white);
-    box-shadow: 0 0 30px rgba(139, 0, 0, 0.5);
+    font-weight: bold;
+    padding: 8px 12px;
+    background: linear-gradient(to bottom, var(--mist-gray), var(--shadow-black));
+    border: 1px solid var(--blood-red);
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.user-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 180px;
+    background: linear-gradient(to bottom, var(--shadow-black), var(--mist-gray));
+    border: 2px solid var(--blood-red);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+}
+
+.user-dropdown a {
+    display: block !important;
+    padding: 8px 15px !important;
+    color: var(--bone-white) !important;
+    text-decoration: none !important;
+    border-bottom: 1px solid rgba(139, 0, 0, 0.3) !important;
+    transition: all 0.3s ease !important;
+    font-size: 0.85em !important;
+}
+
+.user-dropdown a:hover {
+    background: var(--blood-red) !important;
+    color: var(--bone-white) !important;
+    padding-left: 25px !important;
+}
+
+/* Tools Dropdown in Navbar */
+.tools-dropdown {
+    cursor: pointer;
+}
+
+.tools-dropdown .nav-dropdown {
+    min-width: 160px;
+}
+
+/* Enhanced Navigation Hover Effects */
+.horror-nav-item {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.horror-nav-item:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(139, 0, 0, 0.4) !important;
+}
+
+/* Search Suggestions */
+.horror-search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--shadow-black);
+    border: 2px solid var(--blood-red);
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.suggestion-item {
+    padding: 8px 12px;
+    color: var(--bone-white);
+    cursor: pointer;
+    border-bottom: 1px solid rgba(139, 0, 0, 0.3);
+    transition: background 0.2s ease;
+}
+
+.suggestion-item:hover {
+    background: var(--blood-red);
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
 }
 
 .horror-notification {
     position: fixed;
     top: 20px;
     right: 20px;
-    padding: 15px 20px;
+    background: var(--blood-red);
+    color: var(--bone-white);
+    padding: 12px 20px;
     border-radius: 5px;
-    color: white;
-    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     z-index: 10000;
     display: none;
+    font-weight: bold;
 }
 
 .horror-notification.success {
@@ -495,6 +530,10 @@ const additionalCSS = `
     background: #f44336;
 }
 
+.horror-notification.info {
+    background: var(--accent-orange);
+}
+
 .in-view {
     animation: fadeInUp 0.6s ease;
 }
@@ -502,14 +541,39 @@ const additionalCSS = `
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(20px);
     }
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
+
+.horror-search-section {
+    position: relative;
+}
+
+/* Mobile Responsive Dropdowns */
+@media (max-width: 768px) {
+    .nav-dropdown {
+        position: fixed;
+        top: auto;
+        left: 10px;
+        right: 10px;
+        width: auto;
+        min-width: auto;
+    }
+    
+    .user-dropdown {
+        position: fixed;
+        top: auto;
+        right: 10px;
+        left: auto;
+        width: auto;
+        min-width: 200px;
+    }
+}
 `;
 
-// Inject additional CSS
-$('<style>').prop('type', 'text/css').html(additionalCSS).appendTo('head');
+// Inject the CSS
+$('<style>').prop('type', 'text/css').html(effectsCSS).appendTo('head');

@@ -14,6 +14,12 @@ class HorrorTemplate extends BaseTemplate {
     public function execute() {
         $this->html( 'headelement' );
         ?>
+        <script>document.body.className += ' horror-theme-active';</script>
+        <style>
+        body { background: #0D0D0D !important; color: #F5F5DC !important; }
+        #horror-wrapper { background: #0D0D0D; color: #F5F5DC; }
+        .horror-nav-item { background: #8B0000 !important; color: #F5F5DC !important; padding: 8px 16px !important; }
+        </style>
         
         <div id="horror-wrapper" class="horror-skin-wrapper">
             
@@ -24,7 +30,9 @@ class HorrorTemplate extends BaseTemplate {
                     <!-- Site Logo and Title -->
                     <div class="horror-logo-section">
                         <a href="<?php echo htmlspecialchars( $this->data['nav_urls']['mainpage']['href'] ) ?>" class="horror-logo">
-                            <img src="<?php $this->text( 'logopath' ) ?>" alt="<?php $this->text( 'sitename' ) ?>" />
+                            <?php if ( isset( $this->data['logopath'] ) && $this->data['logopath'] ) : ?>
+                                <img src="<?php $this->text( 'logopath' ) ?>" alt="<?php $this->text( 'sitename' ) ?>" />
+                            <?php endif; ?>
                         </a>
                         <div class="horror-site-info">
                             <h1 class="horror-site-title">
@@ -51,19 +59,19 @@ class HorrorTemplate extends BaseTemplate {
                     
                     <!-- User Menu -->
                     <div class="horror-user-section">
-                        <?php if ( $this->getSkin()->getUser()->isRegistered() ) : ?>
+                        <?php if ( $this->getSkin()->getUser() && $this->getSkin()->getUser()->isRegistered() ) : ?>
                             <div class="horror-user-menu">
                                 <span class="user-name">👤 <?php echo htmlspecialchars( $this->getSkin()->getUser()->getName() ) ?></span>
                                 <div class="user-dropdown">
                                     <a href="<?php echo htmlspecialchars( $this->getSkin()->getUser()->getUserPage()->getLocalURL() ) ?>">User Page</a>
-                                    <a href="<?php echo htmlspecialchars( SpecialPage::getTitleFor( 'Preferences' )->getLocalURL() ) ?>">Preferences</a>
-                                    <a href="<?php echo htmlspecialchars( SpecialPage::getTitleFor( 'Userlogout' )->getLocalURL() ) ?>">Logout</a>
+                                    <a href="<?php echo htmlspecialchars( Title::newFromText( 'Preferences', NS_SPECIAL )->getLocalURL() ) ?>">Preferences</a>
+                                    <a href="<?php echo htmlspecialchars( Title::newFromText( 'Userlogout', NS_SPECIAL )->getLocalURL() ) ?>">Logout</a>
                                 </div>
                             </div>
                         <?php else : ?>
                             <div class="horror-login-section">
-                                <a href="<?php echo htmlspecialchars( SpecialPage::getTitleFor( 'Userlogin' )->getLocalURL() ) ?>" class="horror-login-btn">Login</a>
-                                <a href="<?php echo htmlspecialchars( SpecialPage::getTitleFor( 'CreateAccount' )->getLocalURL() ) ?>" class="horror-register-btn">Register</a>
+                                <a href="<?php echo htmlspecialchars( Title::newFromText( 'Userlogin', NS_SPECIAL )->getLocalURL() ) ?>" class="horror-login-btn">Login</a>
+                                <a href="<?php echo htmlspecialchars( Title::newFromText( 'CreateAccount', NS_SPECIAL )->getLocalURL() ) ?>" class="horror-register-btn">Register</a>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -76,18 +84,10 @@ class HorrorTemplate extends BaseTemplate {
                         
                         <!-- Main Navigation -->
                         <div class="horror-main-nav">
-                            <a href="/wiki/Special:AllPages" class="horror-nav-item">🎭 Horror Hub</a>
-                            <a href="/wiki/Special:PopularPages" class="horror-nav-item">💀 Popular Pages</a>
-                            <a href="/wiki/Special:Categories" class="horror-nav-item">🗂️ Categories</a>
-                            <a href="/wiki/Special:RecentChanges" class="horror-nav-item">🕐 Recent Changes</a>
-                            <a href="/wiki/Special:Random" class="horror-nav-item">🎲 Random Page</a>
-                        </div>
-                        
-                        <!-- Action Navigation -->
-                        <div class="horror-action-nav">
-                            <?php if ( $this->getSkin()->getUser()->isRegistered() ) : ?>
-                                <a href="/wiki/Special:CreatePage" class="horror-create-btn">✚ Create Horror Page</a>
-                            <?php endif; ?>
+                            <a href="<?php echo htmlspecialchars( Title::newFromText( 'AllPages', NS_SPECIAL )->getLocalURL() ) ?>" class="horror-nav-item">🎭 Horror Hub</a>
+                            <a href="<?php echo htmlspecialchars( Title::newFromText( 'Categories', NS_SPECIAL )->getLocalURL() ) ?>" class="horror-nav-item">🗂️ Categories</a>
+                            <a href="<?php echo htmlspecialchars( Title::newFromText( 'RecentChanges', NS_SPECIAL )->getLocalURL() ) ?>" class="horror-nav-item">🕐 Recent Changes</a>
+                            <a href="<?php echo htmlspecialchars( Title::newFromText( 'Random', NS_SPECIAL )->getLocalURL() ) ?>" class="horror-nav-item">🎲 Random Page</a>
                         </div>
                         
                     </div>
@@ -105,17 +105,19 @@ class HorrorTemplate extends BaseTemplate {
                     <div class="horror-sidebar-section">
                         <h3 class="sidebar-header">🎭 Horror Categories</h3>
                         <ul class="horror-category-list">
-                            <li><a href="/wiki/Category:Horror_Movies">🎬 Horror Movies</a></li>
-                            <li><a href="/wiki/Category:Horror_Books">📚 Horror Books</a></li>
-                            <li><a href="/wiki/Category:Horror_Games">🎮 Horror Games</a></li>
-                            <li><a href="/wiki/Category:Creepypasta">📝 Creepypasta</a></li>
-                            <li><a href="/wiki/Category:Urban_Legends">🏚️ Urban Legends</a></li>
-                            <li><a href="/wiki/Category:Horror_Characters">👹 Horror Characters</a></li>
+                            <li><a href="<?php echo htmlspecialchars( Title::makeTitle( NS_CATEGORY, 'Horror_Movies' )->getLocalURL() ) ?>">🎬 Horror Movies</a></li>
+                            <li><a href="<?php echo htmlspecialchars( Title::makeTitle( NS_CATEGORY, 'Horror_Books' )->getLocalURL() ) ?>">📚 Horror Books</a></li>
+                            <li><a href="<?php echo htmlspecialchars( Title::makeTitle( NS_CATEGORY, 'Horror_Games' )->getLocalURL() ) ?>">🎮 Horror Games</a></li>
+                            <li><a href="<?php echo htmlspecialchars( Title::makeTitle( NS_CATEGORY, 'Creepypasta' )->getLocalURL() ) ?>">📝 Creepypasta</a></li>
+                            <li><a href="<?php echo htmlspecialchars( Title::makeTitle( NS_CATEGORY, 'Urban_Legends' )->getLocalURL() ) ?>">🏚️ Urban Legends</a></li>
+                            <li><a href="<?php echo htmlspecialchars( Title::makeTitle( NS_CATEGORY, 'Horror_Characters' )->getLocalURL() ) ?>">👹 Horror Characters</a></li>
                         </ul>
                     </div>
                     
                     <!-- MediaWiki Sidebar -->
-                    <?php foreach ( $this->getSidebar() as $boxName => $box ) : ?>
+                    <?php 
+                    $sidebar = $this->getSidebar();
+                    foreach ( $sidebar as $boxName => $box ) : ?>
                         <?php if ( $boxName !== 'SEARCH' && $boxName !== 'TOOLBOX' ) : ?>
                             <div class="horror-sidebar-section">
                                 <h3 class="sidebar-header"><?php echo htmlspecialchars( $box['header'] ?? $boxName ) ?></h3>
@@ -123,8 +125,8 @@ class HorrorTemplate extends BaseTemplate {
                                     <ul class="sidebar-list">
                                         <?php foreach ( $box['content'] as $key => $item ) : ?>
                                             <li>
-                                                <a href="<?php echo htmlspecialchars( $item['href'] ) ?>">
-                                                    <?php echo htmlspecialchars( $item['text'] ) ?>
+                                                <a href="<?php echo htmlspecialchars( $item['href'] ?? '' ) ?>">
+                                                    <?php echo htmlspecialchars( $item['text'] ?? '' ) ?>
                                                 </a>
                                             </li>
                                         <?php endforeach; ?>
@@ -134,19 +136,25 @@ class HorrorTemplate extends BaseTemplate {
                         <?php endif; ?>
                     <?php endforeach; ?>
                     
-                 <!-- Tools -->
-<div class="horror-sidebar-section">
-    <h3 class="sidebar-header">🔧 Tools</h3>
-    <ul class="sidebar-list">
-        <?php foreach ( $this->getSkin()->getToolbox() as $key => $item ) : ?>
-            <li>
-                <a href="<?php echo htmlspecialchars( $item['href'] ) ?>">
-                    <?php echo htmlspecialchars( $item['text'] ) ?>
-                </a>
-            </li>
-        <?php endforeach; ?>
-    </ul>
-</div>
+                    <!-- Tools -->
+                    <div class="horror-sidebar-section">
+                        <h3 class="sidebar-header">🔧 Tools</h3>
+                        <ul class="sidebar-list">
+                            <?php 
+                            if ( isset( $sidebar['TOOLBOX']['content'] ) && is_array( $sidebar['TOOLBOX']['content'] ) ) :
+                                foreach ( $sidebar['TOOLBOX']['content'] as $key => $item ) : ?>
+                                    <li>
+                                        <a href="<?php echo htmlspecialchars( $item['href'] ?? '' ) ?>">
+                                            <?php echo htmlspecialchars( $item['text'] ?? '' ) ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach;
+                            endif; ?>
+                        </ul>
+                    </div>
+                    
+                </aside>
+                
                 <!-- Content Area -->
                 <main id="horror-content" class="horror-content">
                     
@@ -156,17 +164,16 @@ class HorrorTemplate extends BaseTemplate {
                         
                         <!-- Page Actions -->
                         <div class="horror-page-actions">
-                            <?php foreach ( $this->data['content_navigation']['views'] ?? [] as $key => $item ) : ?>
-                                <a href="<?php echo htmlspecialchars( $item['href'] ) ?>" 
-                                   class="horror-page-action <?php echo $item['class'] ?? '' ?>">
-                                    <?php echo htmlspecialchars( $item['text'] ) ?>
-                                </a>
-                            <?php endforeach; ?>
+                            <?php if ( isset( $this->data['content_navigation']['views'] ) ) : ?>
+                                <?php foreach ( $this->data['content_navigation']['views'] as $key => $item ) : ?>
+                                    <a href="<?php echo htmlspecialchars( $item['href'] ?? '' ) ?>" 
+                                       class="horror-page-action <?php echo htmlspecialchars( $item['class'] ?? '' ) ?>">
+                                        <?php echo htmlspecialchars( $item['text'] ?? '' ) ?>
+                                    </a>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </div>
                     </div>
-                    
-                    <!-- Content Warnings (if applicable) -->
-                    <div id="horror-content-warnings" class="horror-content-warnings"></div>
                     
                     <!-- Main Page Content -->
                     <div class="horror-page-content">
@@ -174,7 +181,7 @@ class HorrorTemplate extends BaseTemplate {
                     </div>
                     
                     <!-- Category Links -->
-                    <?php if ( $this->data['catlinks'] ) : ?>
+                    <?php if ( isset( $this->data['catlinks'] ) && $this->data['catlinks'] ) : ?>
                         <div class="horror-categories">
                             <?php $this->html( 'catlinks' ) ?>
                         </div>
@@ -196,19 +203,9 @@ class HorrorTemplate extends BaseTemplate {
                     <div class="footer-section">
                         <h4>🔗 Quick Links</h4>
                         <ul>
-                            <li><a href="/wiki/Special:About">About</a></li>
-                            <li><a href="/wiki/Special:Contact">Contact</a></li>
-                            <li><a href="/wiki/Special:PrivacyPolicy">Privacy</a></li>
-                            <li><a href="/wiki/Help:Contents">Help</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="footer-section">
-                        <h4>📊 Statistics</h4>
-                        <ul>
-                            <li><a href="/wiki/Special:Statistics">Wiki Stats</a></li>
-                            <li><a href="/wiki/Special:RecentChanges">Recent Changes</a></li>
-                            <li><a href="/wiki/Special:NewPages">New Pages</a></li>
+                            <li><a href="<?php echo htmlspecialchars( Title::newFromText( 'Statistics', NS_SPECIAL )->getLocalURL() ) ?>">Wiki Stats</a></li>
+                            <li><a href="<?php echo htmlspecialchars( Title::newFromText( 'RecentChanges', NS_SPECIAL )->getLocalURL() ) ?>">Recent Changes</a></li>
+                            <li><a href="<?php echo htmlspecialchars( Title::newFromText( 'Help:Contents' )->getLocalURL() ) ?>">Help</a></li>
                         </ul>
                     </div>
                     
@@ -221,7 +218,6 @@ class HorrorTemplate extends BaseTemplate {
             
         </div>
         
-        <?php $this->printTrail() ?>
         </body>
         </html>
         <?php
