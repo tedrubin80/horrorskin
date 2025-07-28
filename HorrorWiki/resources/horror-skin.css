@@ -1,0 +1,425 @@
+/* Horror Wiki Custom Theme - Complete Override */
+
+/* CSS Variables */
+:root {
+    --blood-red: #8B0000;
+    --dark-red: #4A0000;
+    --bone-white: #F5F5DC;
+    --shadow-black: #0D0D0D;
+    --mist-gray: #2D2D2D;
+    --accent-orange: #FF4500;
+    --warning-yellow: #DAA520;
+}
+
+/* Base Body Styles */
+body {
+    background: linear-gradient(135deg, #0D0D0D 0%, #1A0A0A 50%, #0D0D0D 100%) !important;
+    background-attachment: fixed !important;
+    color: var(--bone-white) !important;
+    font-family: 'Creepster', 'Chiller', serif !important;
+    min-height: 100vh !important;
+}
+
+/* Horror Wrapper */
+#horror-wrapper {
+    background: var(--shadow-black);
+    min-height: 100vh;
+    color: var(--bone-white);
+}
+
+/* Header Styles */
+#horror-header {
+    background: linear-gradient(to bottom, var(--shadow-black), var(--mist-gray));
+    border-bottom: 3px solid var(--blood-red);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+    padding: 10px 0;
+}
+
+.horror-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.horror-logo-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.horror-logo img {
+    max-height: 50px;
+    filter: drop-shadow(0 0 10px var(--blood-red));
+}
+
+.horror-site-title {
+    margin: 0;
+    font-size: 1.8em;
+}
+
+.horror-site-title a {
+    color: var(--blood-red) !important;
+    text-decoration: none !important;
+    text-shadow: 2px 2px 4px var(--shadow-black);
+}
+
+.horror-site-tagline {
+    color: var(--bone-white);
+    font-size: 0.9em;
+    font-style: italic;
+}
+
+/* Search Section */
+.horror-search-section {
+    flex: 1;
+    max-width: 400px;
+    margin: 0 20px;
+}
+
+#horror-searchInput {
+    width: 100%;
+    background: var(--shadow-black) !important;
+    border: 2px solid var(--blood-red) !important;
+    color: var(--bone-white) !important;
+    padding: 8px 12px !important;
+    border-radius: 5px !important;
+    font-size: 14px;
+}
+
+#horror-searchInput:focus {
+    border-color: var(--accent-orange) !important;
+    box-shadow: 0 0 10px rgba(255, 69, 0, 0.5) !important;
+    outline: none !important;
+}
+
+.horror-search-btn {
+    background: linear-gradient(to bottom, var(--blood-red), var(--dark-red)) !important;
+    border: none !important;
+    color: var(--bone-white) !important;
+    padding: 8px 15px !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    margin-left: 5px;
+}
+
+/* User Section */
+.horror-user-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.horror-login-btn, .horror-register-btn {
+    background: linear-gradient(to bottom, var(--blood-red), var(--dark-red)) !important;
+    color: var(--bone-white) !important;
+    padding: 8px 16px !important;
+    border-radius: 5px !important;
+    text-decoration: none !important;
+    font-weight: bold;
+    border: none;
+}
+
+.horror-login-btn:hover, .horror-register-btn:hover {
+    background: linear-gradient(to bottom, var(--accent-orange), #CC4400) !important;
+    transform: translateY(-2px);
+}
+
+/* Navigation */
+.horror-navigation {
+    background: var(--mist-gray);
+    border-top: 1px solid var(--blood-red);
+}
+
+.horror-nav-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 20px;
+}
+
+.horror-main-nav {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.horror-nav-item {
+    background: linear-gradient(to bottom, var(--mist-gray), var(--shadow-black)) !important;
+    border: 1px solid var(--blood-red) !important;
+    color: var(--bone-white) !important;
+    padding: 8px 16px !important;
+    border-radius: 5px !important;
+    text-decoration: none !important;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.horror-nav-item:hover {
+    background: linear-gradient(to bottom, var(--blood-red), var(--dark-red)) !important;
+    transform: translateY(-2px);
+    color: var(--bone-white) !important;
+}
+
+/* Main Content Layout */
+#horror-main {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Sidebar */
+#horror-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+}
+
+.horror-sidebar-section {
+    background: linear-gradient(to bottom, var(--mist-gray), var(--shadow-black));
+    border: 1px solid var(--blood-red);
+    margin-bottom: 15px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.sidebar-header {
+    background: var(--blood-red) !important;
+    color: var(--bone-white) !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    padding: 10px !important;
+    margin: 0 !important;
+    font-size: 1em !important;
+    text-shadow: 1px 1px 2px var(--shadow-black);
+}
+
+.horror-category-list, .sidebar-list {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.horror-category-list li, .sidebar-list li {
+    border-bottom: 1px solid rgba(139, 0, 0, 0.3);
+}
+
+.horror-category-list a, .sidebar-list a {
+    color: var(--bone-white) !important;
+    text-decoration: none !important;
+    display: block !important;
+    padding: 8px 12px !important;
+    transition: all 0.3s ease;
+}
+
+.horror-category-list a:hover, .sidebar-list a:hover {
+    background: var(--blood-red) !important;
+    color: var(--bone-white) !important;
+    padding-left: 20px !important;
+}
+
+/* Content Area */
+#horror-content {
+    flex: 1;
+    background: rgba(13, 13, 13, 0.95);
+    border: 2px solid var(--blood-red);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(139, 0, 0, 0.5);
+    padding: 20px;
+}
+
+.horror-page-header {
+    border-bottom: 2px solid var(--blood-red);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.horror-page-title {
+    color: var(--blood-red) !important;
+    font-family: 'Creepster', serif !important;
+    text-shadow: 2px 2px 4px var(--shadow-black) !important;
+    font-size: 2.2em !important;
+    margin: 0 0 10px 0 !important;
+    text-align: center;
+}
+
+.horror-page-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.horror-page-action {
+    background: linear-gradient(to bottom, var(--mist-gray), var(--shadow-black)) !important;
+    border: 1px solid var(--blood-red) !important;
+    color: var(--bone-white) !important;
+    padding: 6px 12px !important;
+    border-radius: 3px !important;
+    text-decoration: none !important;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+}
+
+.horror-page-action:hover {
+    background: var(--blood-red) !important;
+    color: var(--bone-white) !important;
+}
+
+.horror-page-content {
+    color: var(--bone-white);
+    line-height: 1.6;
+}
+
+/* Content Styling */
+.horror-page-content h1, 
+.horror-page-content h2, 
+.horror-page-content h3, 
+.horror-page-content h4, 
+.horror-page-content h5, 
+.horror-page-content h6 {
+    color: var(--blood-red) !important;
+    text-shadow: 2px 2px 4px var(--shadow-black) !important;
+    border-bottom: 2px solid var(--blood-red) !important;
+    padding-bottom: 5px !important;
+    margin-top: 20px !important;
+}
+
+.horror-page-content a {
+    color: var(--accent-orange) !important;
+    text-decoration: none !important;
+    transition: color 0.3s ease;
+}
+
+.horror-page-content a:hover {
+    color: var(--blood-red) !important;
+    text-shadow: 0 0 5px var(--blood-red);
+}
+
+.horror-page-content a:visited {
+    color: #CC6600 !important;
+}
+
+.horror-page-content p {
+    color: var(--bone-white) !important;
+}
+
+/* Tables */
+.horror-page-content table {
+    background: rgba(45, 45, 45, 0.9) !important;
+    border: 2px solid var(--blood-red) !important;
+    border-collapse: collapse !important;
+    width: 100% !important;
+    margin: 15px 0 !important;
+}
+
+.horror-page-content table th {
+    background: var(--blood-red) !important;
+    color: var(--bone-white) !important;
+    padding: 10px !important;
+    text-align: center !important;
+    font-weight: bold !important;
+}
+
+.horror-page-content table td {
+    padding: 8px !important;
+    border: 1px solid rgba(139, 0, 0, 0.5) !important;
+    color: var(--bone-white) !important;
+}
+
+.horror-page-content table tr:nth-child(even) {
+    background: rgba(26, 10, 10, 0.5) !important;
+}
+
+.horror-page-content table tr:hover {
+    background: rgba(139, 0, 0, 0.2) !important;
+}
+
+/* Footer */
+#horror-footer {
+    background: var(--shadow-black);
+    border-top: 2px solid var(--blood-red);
+    color: var(--bone-white);
+    padding: 30px 0;
+    margin-top: 40px;
+}
+
+.horror-footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 200px;
+}
+
+.footer-section h4 {
+    color: var(--blood-red) !important;
+    margin-bottom: 15px !important;
+    font-size: 1.2em !important;
+}
+
+.footer-section ul {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.footer-section ul li {
+    margin-bottom: 8px;
+}
+
+.footer-section ul li a {
+    color: var(--bone-white) !important;
+    text-decoration: none !important;
+    transition: color 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+    color: var(--accent-orange) !important;
+}
+
+.footer-copyright {
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--blood-red);
+    color: var(--bone-white);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .horror-header-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    #horror-main {
+        flex-direction: column;
+        padding: 10px;
+    }
+    
+    #horror-sidebar {
+        width: 100%;
+        order: 2;
+    }
+    
+    #horror-content {
+        order: 1;
+        margin-bottom: 20px;
+    }
+    
+    .horror-footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+}
