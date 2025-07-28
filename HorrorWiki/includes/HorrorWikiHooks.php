@@ -1,6 +1,6 @@
 <?php
 /**
- * HorrorWikiHooks - Unified hook handlers combining skin and extension functionality
+ * HorrorWikiHooks - Fixed hook handlers for MediaWiki compatibility
  * 
  * @file
  * @ingroup Extensions
@@ -14,7 +14,6 @@ class HorrorWikiHooks {
     public static function onBeforePageDisplay( OutputPage &$out, Skin &$skin ) {
         // Load horror skin resources
         $out->addModuleStyles( [ 'skins.horror' ] );
-        $out->addModules( [ 'skins.horror.js' ] );
         
         // Check if this is a horror content page
         if ( self::isHorrorContentPage( $out->getTitle() ) ) {
@@ -93,16 +92,16 @@ class HorrorWikiHooks {
     }
     
     /**
-     * Register custom parser functions
+     * Register custom parser functions - FIXED VERSION
      */
     public static function onParserFirstCallInit( Parser $parser ) {
-        // Register horror-specific parser functions
-        $parser->setFunctionHook( 'contentwarning', [ __CLASS__, 'renderContentWarning' ] );
-        $parser->setFunctionHook( 'horrorrating', [ __CLASS__, 'renderHorrorRating' ] );
-        $parser->setFunctionHook( 'spoiler', [ __CLASS__, 'renderSpoiler' ] );
-        $parser->setFunctionHook( 'movieinfobox', [ __CLASS__, 'renderMovieInfobox' ] );
-        $parser->setFunctionHook( 'bookinfobox', [ __CLASS__, 'renderBookInfobox' ] );
-        $parser->setFunctionHook( 'gameinfobox', [ __CLASS__, 'renderGameInfobox' ] );
+        // Register horror-specific parser functions using correct method
+        $parser->setHook( 'contentwarning', [ __CLASS__, 'renderContentWarning' ] );
+        $parser->setHook( 'horrorrating', [ __CLASS__, 'renderHorrorRating' ] );
+        $parser->setHook( 'spoiler', [ __CLASS__, 'renderSpoiler' ] );
+        $parser->setHook( 'movieinfobox', [ __CLASS__, 'renderMovieInfobox' ] );
+        $parser->setHook( 'bookinfobox', [ __CLASS__, 'renderBookInfobox' ] );
+        $parser->setHook( 'gameinfobox', [ __CLASS__, 'renderGameInfobox' ] );
         
         return true;
     }
@@ -112,19 +111,35 @@ class HorrorWikiHooks {
      */
     public static function onLoadExtensionSchemaUpdates( DatabaseUpdater $updater ) {
         $dir = __DIR__ . '/../sql/';
-        $updater->addExtensionTable( 'horror_ratings', $dir . 'horror_ratings.sql' );
-        $updater->addExtensionTable( 'content_warnings', $dir . 'content_warnings.sql' );
-        $updater->addExtensionTable( 'horror_pages', $dir . 'horror_pages.sql' );
-        $updater->addExtensionTable( 'horror_categories', $dir . 'horror_categories.sql' );
-        $updater->addExtensionTable( 'user_horror_preferences', $dir . 'user_horror_preferences.sql' );
+        
+        // Only add tables if SQL files exist
+        if ( file_exists( $dir . 'horror_ratings.sql' ) ) {
+            $updater->addExtensionTable( 'horror_ratings', $dir . 'horror_ratings.sql' );
+        }
+        if ( file_exists( $dir . 'content_warnings.sql' ) ) {
+            $updater->addExtensionTable( 'content_warnings', $dir . 'content_warnings.sql' );
+        }
+        if ( file_exists( $dir . 'horror_pages.sql' ) ) {
+            $updater->addExtensionTable( 'horror_pages', $dir . 'horror_pages.sql' );
+        }
+        if ( file_exists( $dir . 'horror_categories.sql' ) ) {
+            $updater->addExtensionTable( 'horror_categories', $dir . 'horror_categories.sql' );
+        }
+        if ( file_exists( $dir . 'user_horror_preferences.sql' ) ) {
+            $updater->addExtensionTable( 'user_horror_preferences', $dir . 'user_horror_preferences.sql' );
+        }
         
         return true;
     }
     
     /**
-     * Render content warning widget
+     * Render content warning widget - FIXED VERSION
      */
-    public static function renderContentWarning( $parser, $type = '', $description = '', $severity = '3' ) {
+    public static function renderContentWarning( $input, array $args, Parser $parser, PPFrame $frame ) {
+        $type = $args['type'] ?? '';
+        $description = $args['description'] ?? '';
+        $severity = $args['severity'] ?? '3';
+        
         $warnings = [
             'gore' => [ 'icon' => '🩸', 'text' => 'Graphic Violence & Gore' ],
             'jump' => [ 'icon' => '😱', 'text' => 'Jump Scares' ],
@@ -155,16 +170,23 @@ class HorrorWikiHooks {
         $html .= '</div>';
         $html .= '</div>';
         
-        // Store warning in database
-        self::storeContentWarning( $parser->getTitle()->getArticleID(), $type, $description, $severity );
+        // Store warning in database if possible
+        if ( method_exists( 'HorrorWikiHooks', 'storeContentWarning' ) ) {
+            self::storeContentWarning( $parser->getTitle()->getArticleID(), $type, $description, $severity );
+        }
         
-        return [ $html, 'noparse' => true, 'isHTML' => true ];
+        return $html;
     }
     
     /**
-     * Render horror rating widget
+     * Render horror rating widget - FIXED VERSION
      */
-    public static function renderHorrorRating( $parser, $gore = 0, $fear = 0, $disturbing = 0, $overall = 0 ) {
+    public static function renderHorrorRating( $input, array $args, Parser $parser, PPFrame $frame ) {
+        $gore = intval( $args['gore'] ?? 0 );
+        $fear = intval( $args['fear'] ?? 0 );
+        $disturbing = intval( $args['disturbing'] ?? 0 );
+        $overall = intval( $args['overall'] ?? 0 );
+        
         $pageId = $parser->getTitle()->getArticleID();
         $ratings = self::getPageRatings( $pageId );
         
@@ -173,13 +195,13 @@ class HorrorWikiHooks {
         $html .= '<div class="rating-bars">';
         
         $categories = [
-            'Gore Level' => [ 'value' => intval( $gore ), 'user_avg' => $ratings['gore'] ?? 0 ],
-            'Fear Factor' => [ 'value' => intval( $fear ), 'user_avg' => $ratings['fear'] ?? 0 ],
-            'Disturbing Content' => [ 'value' => intval( $disturbing ), 'user_avg' => $ratings['disturbing'] ?? 0 ]
+            'Gore Level' => [ 'value' => $gore, 'user_avg' => $ratings['gore'] ?? 0 ],
+            'Fear Factor' => [ 'value' => $fear, 'user_avg' => $ratings['fear'] ?? 0 ],
+            'Disturbing Content' => [ 'value' => $disturbing, 'user_avg' => $ratings['disturbing'] ?? 0 ]
         ];
         
-        if ( intval( $overall ) > 0 ) {
-            $categories['Overall Rating'] = [ 'value' => intval( $overall ), 'user_avg' => $ratings['overall'] ?? 0 ];
+        if ( $overall > 0 ) {
+            $categories['Overall Rating'] = [ 'value' => $overall, 'user_avg' => $ratings['overall'] ?? 0 ];
         }
         
         foreach ( $categories as $label => $data ) {
@@ -209,51 +231,41 @@ class HorrorWikiHooks {
             $html .= '</div></div>';
         }
         
-        // Add user rating interface for logged-in users
-        global $wgUser;
-        if ( !$wgUser->isAnon() ) {
-            $html .= '<div class="user-rating-section">';
-            $html .= '<div class="rating-prompt">Rate this content:</div>';
-            $html .= '<div class="user-rating-controls">';
-            foreach ( array_keys( $categories ) as $category ) {
-                $catKey = strtolower( str_replace( ' ', '_', $category ) );
-                $html .= '<div class="user-rating-row" data-category="' . $catKey . '">';
-                $html .= '<span class="rating-label">' . $category . '</span>';
-                $html .= '<div class="rating-input">';
-                for ( $i = 1; $i <= 5; $i++ ) {
-                    $html .= '<span class="rating-skull clickable" data-rating="' . $i . '">💀</span>';
-                }
-                $html .= '</div></div>';
-            }
-            $html .= '<button class="submit-rating btn-horror">Submit Ratings</button>';
-            $html .= '</div></div>';
-        }
+        $html .= '</div></div>';
         
-        $html .= '</div>';
-        
-        return [ $html, 'noparse' => true, 'isHTML' => true ];
+        return $html;
     }
     
     /**
-     * Render spoiler section
+     * Render spoiler section - FIXED VERSION
      */
-    public static function renderSpoiler( $parser, $content = '', $title = 'Spoiler Alert' ) {
+    public static function renderSpoiler( $input, array $args, Parser $parser, PPFrame $frame ) {
+        $title = $args['title'] ?? 'Spoiler Alert';
+        $content = $input ?? '';
+        
         $html = '<div class="horror-spoiler">';
         $html .= '<div class="spoiler-warning" data-title="' . htmlspecialchars( $title ) . '">';
         $html .= '<span class="spoiler-icon">⚠️</span>';
         $html .= '<span class="spoiler-text">' . htmlspecialchars( $title ) . ' - Click to reveal</span>';
         $html .= '</div>';
-        $html .= '<div class="spoiler-content">' . $parser->recursiveTagParse( $content ) . '</div>';
+        $html .= '<div class="spoiler-content">' . $parser->recursiveTagParse( $content, $frame ) . '</div>';
         $html .= '</div>';
         
-        return [ $html, 'noparse' => true, 'isHTML' => true ];
+        return $html;
     }
     
     /**
-     * Render movie infobox
+     * Render movie infobox - SIMPLIFIED VERSION
      */
-    public static function renderMovieInfobox( $parser, $title = '', $year = '', $director = '', $genre = '', 
-                                              $runtime = '', $rating = '', $poster = '', $trailer = '' ) {
+    public static function renderMovieInfobox( $input, array $args, Parser $parser, PPFrame $frame ) {
+        $title = $args['title'] ?? '';
+        $year = $args['year'] ?? '';
+        $director = $args['director'] ?? '';
+        $genre = $args['genre'] ?? '';
+        $runtime = $args['runtime'] ?? '';
+        $rating = $args['rating'] ?? '';
+        $poster = $args['poster'] ?? '';
+        
         $html = '<div class="horror-infobox movie-infobox">';
         $html .= '<div class="infobox-header">🎬 Horror Movie</div>';
         
@@ -279,34 +291,23 @@ class HorrorWikiHooks {
                 $html .= '</div>';
             }
         }
-        
-        if ( !empty( $trailer ) ) {
-            $html .= '<div class="infobox-row">';
-            $html .= '<a href="' . htmlspecialchars( $trailer ) . '" class="trailer-link btn-horror" target="_blank">🎥 Watch Trailer</a>';
-            $html .= '</div>';
-        }
-        
         $html .= '</div></div>';
         
-        // Store movie data
-        self::storeHorrorPageData( $parser->getTitle()->getArticleID(), 'movie', [
-            'genre' => $genre,
-            'year' => intval( $year ),
-            'director' => $director,
-            'runtime' => intval( $runtime ),
-            'rating_mpaa' => $rating,
-            'poster_url' => $poster,
-            'trailer_url' => $trailer
-        ]);
-        
-        return [ $html, 'noparse' => true, 'isHTML' => true ];
+        return $html;
     }
     
     /**
-     * Render book infobox
+     * Render book infobox - SIMPLIFIED VERSION
      */
-    public static function renderBookInfobox( $parser, $title = '', $author = '', $year = '', $genre = '', 
-                                             $pages = '', $isbn = '', $cover = '' ) {
+    public static function renderBookInfobox( $input, array $args, Parser $parser, PPFrame $frame ) {
+        $title = $args['title'] ?? '';
+        $author = $args['author'] ?? '';
+        $year = $args['year'] ?? '';
+        $genre = $args['genre'] ?? '';
+        $pages = $args['pages'] ?? '';
+        $isbn = $args['isbn'] ?? '';
+        $cover = $args['cover'] ?? '';
+        
         $html = '<div class="horror-infobox book-infobox">';
         $html .= '<div class="infobox-header">📚 Horror Book</div>';
         
@@ -334,24 +335,21 @@ class HorrorWikiHooks {
         }
         $html .= '</div></div>';
         
-        // Store book data
-        self::storeHorrorPageData( $parser->getTitle()->getArticleID(), 'book', [
-            'author' => $author,
-            'genre' => $genre,
-            'year' => intval( $year ),
-            'pages' => intval( $pages ),
-            'isbn' => $isbn,
-            'cover_url' => $cover
-        ]);
-        
-        return [ $html, 'noparse' => true, 'isHTML' => true ];
+        return $html;
     }
     
     /**
-     * Render game infobox
+     * Render game infobox - SIMPLIFIED VERSION
      */
-    public static function renderGameInfobox( $parser, $title = '', $developer = '', $year = '', $platform = '', 
-                                             $genre = '', $rating = '', $cover = '' ) {
+    public static function renderGameInfobox( $input, array $args, Parser $parser, PPFrame $frame ) {
+        $title = $args['title'] ?? '';
+        $developer = $args['developer'] ?? '';
+        $year = $args['year'] ?? '';
+        $platform = $args['platform'] ?? '';
+        $genre = $args['genre'] ?? '';
+        $rating = $args['rating'] ?? '';
+        $cover = $args['cover'] ?? '';
+        
         $html = '<div class="horror-infobox game-infobox">';
         $html .= '<div class="infobox-header">🎮 Horror Game</div>';
         
@@ -379,17 +377,7 @@ class HorrorWikiHooks {
         }
         $html .= '</div></div>';
         
-        // Store game data
-        self::storeHorrorPageData( $parser->getTitle()->getArticleID(), 'game', [
-            'developer' => $developer,
-            'genre' => $genre,
-            'year' => intval( $year ),
-            'platform' => $platform,
-            'rating_esrb' => $rating,
-            'cover_url' => $cover
-        ]);
-        
-        return [ $html, 'noparse' => true, 'isHTML' => true ];
+        return $html;
     }
     
     /**
@@ -466,70 +454,69 @@ class HorrorWikiHooks {
     }
     
     /**
-     * Store content warning in database
+     * Store content warning in database - SAFE VERSION
      */
     private static function storeContentWarning( $pageId, $type, $description, $severity ) {
-        if ( $pageId > 0 ) {
-            $dbw = wfGetDB( DB_MASTER );
-            
-            $dbw->replace(
-                'content_warnings',
-                [ [ 'cw_page_id', 'cw_warning_type' ] ],
-                [
-                    'cw_page_id' => $pageId,
-                    'cw_warning_type' => $type,
-                    'cw_description' => $description,
-                    'cw_severity' => intval( $severity ),
-                    'cw_added_by' => RequestContext::getMain()->getUser()->getId()
-                ],
-                __METHOD__
-            );
-        }
-    }
-    
-    /**
-     * Store horror page metadata
-     */
-    private static function storeHorrorPageData( $pageId, $contentType, $data ) {
-        if ( $pageId > 0 ) {
-            $dbw = wfGetDB( DB_MASTER );
-            
-            $insertData = [
-                'hp_page_id' => $pageId,
-                'hp_content_type' => $contentType
-            ];
-            
-            // Add data fields with hp_ prefix
-            foreach ( $data as $key => $value ) {
-                $insertData['hp_' . $key] = $value;
+        // Only attempt database operations if tables exist
+        try {
+            if ( $pageId > 0 ) {
+                $dbw = wfGetDB( DB_PRIMARY );
+                
+                // Check if table exists first
+                if ( $dbw->tableExists( 'content_warnings' ) ) {
+                    $dbw->replace(
+                        'content_warnings',
+                        [ [ 'cw_page_id', 'cw_warning_type' ] ],
+                        [
+                            'cw_page_id' => $pageId,
+                            'cw_warning_type' => $type,
+                            'cw_description' => $description,
+                            'cw_severity' => intval( $severity ),
+                            'cw_added_by' => RequestContext::getMain()->getUser()->getId()
+                        ],
+                        __METHOD__
+                    );
+                }
             }
-            
-            $dbw->replace( 'horror_pages', [ 'hp_page_id' ], $insertData, __METHOD__ );
+        } catch ( Exception $e ) {
+            // Silently fail if database operations aren't available
+            wfDebugLog( 'HorrorWiki', 'Could not store content warning: ' . $e->getMessage() );
         }
     }
     
     /**
-     * Get page ratings from database
+     * Get page ratings from database - SAFE VERSION
      */
     private static function getPageRatings( $pageId ) {
         if ( $pageId <= 0 ) return [];
         
-        $dbr = wfGetDB( DB_REPLICA );
-        
-        $res = $dbr->select(
-            'horror_ratings',
-            [ 'hr_category', 'AVG(hr_rating) as avg_rating' ],
-            [ 'hr_page_id' => $pageId ],
-            __METHOD__,
-            [ 'GROUP BY' => 'hr_category' ]
-        );
-        
-        $ratings = [];
-        foreach ( $res as $row ) {
-            $category = strtolower( str_replace( ' ', '_', $row->hr_category ) );
-            $ratings[$category] = floatval( $row->avg_rating );
+        try {
+            $dbr = wfGetDB( DB_REPLICA );
+            
+            // Check if table exists first
+            if ( !$dbr->tableExists( 'horror_ratings' ) ) {
+                return [];
+            }
+            
+            $res = $dbr->select(
+                'horror_ratings',
+                [ 'hr_category', 'AVG(hr_rating) as avg_rating' ],
+                [ 'hr_page_id' => $pageId ],
+                __METHOD__,
+                [ 'GROUP BY' => 'hr_category' ]
+            );
+            
+            $ratings = [];
+            foreach ( $res as $row ) {
+                $category = strtolower( str_replace( ' ', '_', $row->hr_category ) );
+                $ratings[$category] = floatval( $row->avg_rating );
+            }
+            
+            return $ratings;
+        } catch ( Exception $e ) {
+            // Silently fail if database operations aren't available
+            wfDebugLog( 'HorrorWiki', 'Could not get page ratings: ' . $e->getMessage() );
+            return [];
         }
-        
-        return $ratings;
     }
 }
