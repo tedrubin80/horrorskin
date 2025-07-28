@@ -1,0 +1,314 @@
+#!/bin/bash
+
+# 🎭 HorrorWiki File Organization Script
+# This script organizes your horror wiki files into proper MediaWiki extension structure
+
+echo "🎭 Starting HorrorWiki File Organization..."
+echo "======================================"
+
+# Create the main extension directory structure
+echo "📁 Creating directory structure..."
+mkdir -p extensions/HorrorWiki/{includes/{specials},resources,sql,i18n,docs,templates}
+
+# Set proper permissions
+chmod 755 extensions/HorrorWiki
+chmod 755 extensions/HorrorWiki/includes
+chmod 755 extensions/HorrorWiki/includes/specials
+chmod 755 extensions/HorrorWiki/resources
+chmod 755 extensions/HorrorWiki/sql
+chmod 755 extensions/HorrorWiki/i18n
+chmod 755 extensions/HorrorWiki/docs
+chmod 755 extensions/HorrorWiki/templates
+
+echo "✅ Directory structure created!"
+
+# Organize main extension files
+echo "📦 Organizing main extension files..."
+
+# Copy main extension files (if they exist in current directory)
+[ -f "HorrorWiki/extension.json" ] && cp "HorrorWiki/extension.json" "extensions/HorrorWiki/"
+[ -f "HorrorWiki/HorrorWiki.php" ] && cp "HorrorWiki/HorrorWiki.php" "extensions/HorrorWiki/"
+[ -f "unified_horror_extension.php" ] && cp "unified_horror_extension.php" "extensions/HorrorWiki/extension.json"
+[ -f "LICENSE" ] && cp "LICENSE" "extensions/HorrorWiki/"
+
+echo "✅ Main extension files organized!"
+
+# Organize includes directory
+echo "🔧 Organizing includes directory..."
+
+# Copy PHP includes
+[ -f "HorrorWiki/includes/SkinHorror.php" ] && cp "HorrorWiki/includes/SkinHorror.php" "extensions/HorrorWiki/includes/"
+[ -f "HorrorWiki/includes/HorrorTemplate.php" ] && cp "HorrorWiki/includes/HorrorTemplate.php" "extensions/HorrorWiki/includes/"
+[ -f "HorrorWiki/includes/HorrorWikiHooks.php" ] && cp "HorrorWiki/includes/HorrorWikiHooks.php" "extensions/HorrorWiki/includes/"
+[ -f "unified_skin_horror.php" ] && cp "unified_skin_horror.php" "extensions/HorrorWiki/includes/SkinHorror.php"
+[ -f "unified_horror_template.php" ] && cp "unified_horror_template.php" "extensions/HorrorWiki/includes/HorrorTemplate.php"
+[ -f "unified_horror_hooks.php" ] && cp "unified_horror_hooks.php" "extensions/HorrorWiki/includes/HorrorWikiHooks.php"
+
+echo "✅ Includes directory organized!"
+
+# Organize resources directory
+echo "🎨 Organizing resources directory..."
+
+# Copy CSS files
+[ -f "HorrorWiki/resources/horror-skin.css" ] && cp "HorrorWiki/resources/horror-skin.css" "extensions/HorrorWiki/resources/"
+[ -f "combined_resources_css.css" ] && cp "combined_resources_css.css" "extensions/HorrorWiki/resources/horror-skin.css"
+[ -f "component_styles.css" ] && cp "component_styles.css" "extensions/HorrorWiki/resources/horror-components.css"
+
+# Copy JavaScript files
+[ -f "HorrorWiki/resources/horror-navigation.js" ] && cp "HorrorWiki/resources/horror-navigation.js" "extensions/HorrorWiki/resources/"
+[ -f "combined_resources_js.js" ] && cp "combined_resources_js.js" "extensions/HorrorWiki/resources/horror-navigation.js"
+
+echo "✅ Resources directory organized!"
+
+# Organize internationalization
+echo "🌍 Organizing internationalization files..."
+[ -f "HorrorWiki/i18n/en.json" ] && cp "HorrorWiki/i18n/en.json" "extensions/HorrorWiki/i18n/"
+
+echo "✅ i18n files organized!"
+
+# Organize documentation
+echo "📚 Organizing documentation..."
+[ -f "HorrorWiki/docs/README.md" ] && cp "HorrorWiki/docs/README.md" "extensions/HorrorWiki/docs/"
+[ -f "integration_guide.md" ] && cp "integration_guide.md" "extensions/HorrorWiki/docs/INTEGRATION_GUIDE.md"
+
+echo "✅ Documentation organized!"
+
+# Create missing configuration files if they don't exist
+echo "⚙️ Creating missing configuration files..."
+
+# Create extension.json if it doesn't exist
+if [ ! -f "extensions/HorrorWiki/extension.json" ]; then
+    cat > extensions/HorrorWiki/extension.json << 'EOF'
+{
+    "name": "HorrorWiki",
+    "version": "2.0.0",
+    "author": ["Horror Wiki Development Team"],
+    "url": "https://github.com/user/horror-wiki-complete",
+    "description": "Complete horror wiki system with custom skin, content warnings, ratings, and special pages",
+    "descriptionmsg": "horrorwiki-desc",
+    "license-name": "MIT",
+    "type": "other",
+    "requires": {
+        "MediaWiki": ">= 1.35.0"
+    },
+    "ValidSkinNames": {
+        "horror": {
+            "class": "SkinHorror",
+            "args": [{"name": "horror", "template": "HorrorTemplate"}]
+        }
+    },
+    "MessagesDirs": {
+        "HorrorWiki": ["i18n"]
+    },
+    "AutoloadClasses": {
+        "SkinHorror": "includes/SkinHorror.php",
+        "HorrorTemplate": "includes/HorrorTemplate.php",
+        "HorrorWikiHooks": "includes/HorrorWikiHooks.php",
+        "SpecialHorrorDashboard": "includes/specials/SpecialHorrorDashboard.php",
+        "SpecialContentWarnings": "includes/specials/SpecialContentWarnings.php",
+        "SpecialHorrorRatings": "includes/specials/SpecialHorrorRatings.php"
+    },
+    "SpecialPages": {
+        "HorrorDashboard": "SpecialHorrorDashboard",
+        "ContentWarnings": "SpecialContentWarnings",
+        "HorrorRatings": "SpecialHorrorRatings"
+    },
+    "Hooks": {
+        "BeforePageDisplay": "HorrorWikiHooks::onBeforePageDisplay",
+        "SkinTemplateNavigation::Universal": "HorrorWikiHooks::onSkinTemplateNavigation",
+        "ParserFirstCallInit": "HorrorWikiHooks::onParserFirstCallInit",
+        "LoadExtensionSchemaUpdates": "HorrorWikiHooks::onLoadExtensionSchemaUpdates"
+    },
+    "ResourceModules": {
+        "skins.horror": {
+            "styles": ["resources/horror-skin.css"],
+            "targets": ["desktop", "mobile"]
+        },
+        "ext.horrorwiki.features": {
+            "scripts": ["resources/horror-navigation.js"],
+            "styles": ["resources/horror-components.css"],
+            "dependencies": ["jquery"],
+            "targets": ["desktop", "mobile"]
+        }
+    },
+    "ResourceFileModulePaths": {
+        "localBasePath": "",
+        "remoteExtPath": "HorrorWiki"
+    },
+    "config": {
+        "HorrorWikiDefaultSkin": {
+            "value": true,
+            "description": "Automatically set horror skin for horror content pages"
+        },
+        "HorrorWikiEnableWarnings": {
+            "value": true,
+            "description": "Enable content warning system"
+        },
+        "HorrorWikiEnableRatings": {
+            "value": true,
+            "description": "Enable horror rating system"
+        }
+    },
+    "manifest_version": 2
+}
+EOF
+    echo "✅ Created extension.json"
+fi
+
+# Create HorrorWiki.php entry point if it doesn't exist
+if [ ! -f "extensions/HorrorWiki/HorrorWiki.php" ]; then
+    cat > extensions/HorrorWiki/HorrorWiki.php << 'EOF'
+<?php
+/**
+ * HorrorWiki Extension - Legacy Entry Point
+ * Unified horror wiki system with custom skin and features
+ */
+
+if ( function_exists( 'wfLoadExtension' ) ) {
+    wfLoadExtension( 'HorrorWiki' );
+    return true;
+} else {
+    die( 'This version of HorrorWiki requires MediaWiki 1.35+' );
+}
+EOF
+    echo "✅ Created HorrorWiki.php"
+fi
+
+# Create English messages file if it doesn't exist
+if [ ! -f "extensions/HorrorWiki/i18n/en.json" ]; then
+    cat > extensions/HorrorWiki/i18n/en.json << 'EOF'
+{
+    "horrorwiki-desc": "Complete horror wiki system with custom skin and advanced features",
+    "skinname-horror": "Horror",
+    "horror-dashboard": "Horror Dashboard",
+    "content-warnings": "Content Warnings",
+    "horror-ratings": "Horror Ratings"
+}
+EOF
+    echo "✅ Created en.json"
+fi
+
+# Create README if it doesn't exist
+if [ ! -f "extensions/HorrorWiki/docs/README.md" ]; then
+    cat > extensions/HorrorWiki/docs/README.md << 'EOF'
+# 🎭 Horror Wiki Extension
+
+A complete horror-themed MediaWiki extension with custom skin and advanced features.
+
+## Features
+
+- 🎨 **Custom Horror Skin** - Dark, atmospheric design
+- ⚠️ **Content Warnings** - Customizable warning system
+- 💀 **Horror Ratings** - Interactive rating system
+- 🎯 **Special Pages** - Dashboard, ratings, warnings management
+- 📱 **Responsive Design** - Works on all devices
+
+## Installation
+
+1. Extract to `extensions/HorrorWiki/`
+2. Add `wfLoadExtension( 'HorrorWiki' );` to LocalSettings.php
+3. Run `php maintenance/update.php`
+4. Import SQL files from `sql/` directory
+
+## Configuration
+
+```php
+$wgHorrorWikiDefaultSkin = true;       // Auto-apply to horror content
+$wgHorrorWikiEnableWarnings = true;    // Enable warning system
+$wgHorrorWikiEnableRatings = true;     // Enable rating system
+```
+EOF
+    echo "✅ Created README.md"
+fi
+
+# Set proper file permissions
+echo "🔒 Setting file permissions..."
+find extensions/HorrorWiki -type d -exec chmod 755 {} \;
+find extensions/HorrorWiki -name "*.php" -exec chmod 644 {} \;
+find extensions/HorrorWiki -name "*.css" -exec chmod 644 {} \;
+find extensions/HorrorWiki -name "*.js" -exec chmod 644 {} \;
+find extensions/HorrorWiki -name "*.json" -exec chmod 644 {} \;
+find extensions/HorrorWiki -name "*.md" -exec chmod 644 {} \;
+
+echo "✅ File permissions set!"
+
+# Create installation script
+echo "📦 Creating installation script..."
+cat > extensions/HorrorWiki/install.sh << 'EOF'
+#!/bin/bash
+
+echo "🎭 Installing HorrorWiki Extension..."
+echo "==================================="
+
+# Check if we're in MediaWiki root
+if [ ! -f "LocalSettings.php" ]; then
+    echo "❌ Error: LocalSettings.php not found."
+    echo "Please run this script from your MediaWiki root directory."
+    exit 1
+fi
+
+# Check if extension is already enabled
+if grep -q "HorrorWiki" LocalSettings.php; then
+    echo "✅ HorrorWiki already enabled in LocalSettings.php"
+else
+    echo "📝 Adding HorrorWiki to LocalSettings.php..."
+    echo "" >> LocalSettings.php
+    echo "# Horror Wiki Extension" >> LocalSettings.php
+    echo "wfLoadExtension( 'HorrorWiki' );" >> LocalSettings.php
+    echo "" >> LocalSettings.php
+    echo "# Horror Wiki Configuration (optional)" >> LocalSettings.php
+    echo "# \$wgHorrorWikiDefaultSkin = true;" >> LocalSettings.php
+    echo "# \$wgHorrorWikiEnableWarnings = true;" >> LocalSettings.php
+    echo "# \$wgHorrorWikiEnableRatings = true;" >> LocalSettings.php
+fi
+
+echo "🎉 Installation complete!"
+echo ""
+echo "Next steps:"
+echo "1. Import SQL files from extensions/HorrorWiki/sql/ to your database"
+echo "2. Run: php maintenance/update.php"
+echo "3. Visit /wiki/Special:HorrorDashboard to test"
+echo ""
+echo "🎭 Your horror wiki is ready!"
+EOF
+
+chmod +x extensions/HorrorWiki/install.sh
+echo "✅ Installation script created!"
+
+# Create deployment package
+echo "📦 Creating deployment package..."
+cd extensions
+tar -czf HorrorWiki-$(date +%Y%m%d).tar.gz HorrorWiki/
+zip -r HorrorWiki-$(date +%Y%m%d).zip HorrorWiki/
+cd ..
+
+echo "✅ Deployment packages created!"
+
+# Final verification
+echo "🔍 Verifying file structure..."
+echo ""
+echo "📂 Final Directory Structure:"
+tree extensions/HorrorWiki/ 2>/dev/null || find extensions/HorrorWiki/ -type f | sort
+
+echo ""
+echo "🎉 ========================================"
+echo "🎭 HORROR WIKI ORGANIZATION COMPLETE!"
+echo "========================================"
+echo ""
+echo "📁 Your files are now organized in:"
+echo "   extensions/HorrorWiki/"
+echo ""
+echo "📦 Deployment packages created:"
+echo "   - HorrorWiki-$(date +%Y%m%d).tar.gz"
+echo "   - HorrorWiki-$(date +%Y%m%d).zip"
+echo ""
+echo "🚀 Ready to deploy to your MediaWiki installation!"
+echo ""
+echo "Next steps:"
+echo "1. Copy extensions/HorrorWiki/ to your MediaWiki extensions directory"
+echo "2. Run ./install.sh from your MediaWiki root"
+echo "3. Import any SQL files to your database"
+echo "4. Run php maintenance/update.php"
+echo "5. Test your horror wiki!"
+echo ""
+echo "🎭 Enjoy your terrifying wiki experience! 👹"
