@@ -1,0 +1,391 @@
+/* Horror Wiki Custom Theme - Complete Override */
+
+/* Reset and Base Styles */
+.horror-wiki-theme {
+    --blood-red: #8B0000;
+    --dark-red: #4A0000;
+    --bone-white: #F5F5DC;
+    --shadow-black: #0D0D0D;
+    --mist-gray: #2D2D2D;
+    --accent-orange: #FF4500;
+    --warning-yellow: #DAA520;
+}
+
+body.horror-wiki-theme {
+    background: linear-gradient(135deg, #0D0D0D 0%, #1A0A0A 50%, #0D0D0D 100%);
+    background-attachment: fixed;
+    color: var(--bone-white);
+    font-family: 'Creepster', 'Chiller', serif;
+    min-height: 100vh;
+}
+
+/* Override MediaWiki's default styles completely */
+.horror-wiki-theme #mw-page-base,
+.horror-wiki-theme #mw-head-base {
+    background: none !important;
+}
+
+.horror-wiki-theme #content {
+    background: rgba(13, 13, 13, 0.95);
+    border: 2px solid var(--blood-red);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(139, 0, 0, 0.5);
+    margin: 20px;
+    padding: 20px;
+}
+
+/* Header and Navigation */
+.horror-wiki-theme #mw-head {
+    background: linear-gradient(to bottom, var(--shadow-black), var(--mist-gray));
+    border-bottom: 3px solid var(--blood-red);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+.horror-wiki-theme #p-logo a {
+    background-size: contain !important;
+    filter: drop-shadow(0 0 10px var(--blood-red));
+}
+
+.horror-wiki-theme .vectorTabs {
+    background: none;
+}
+
+.horror-wiki-theme .vectorTabs li {
+    background: linear-gradient(to bottom, var(--mist-gray), var(--shadow-black));
+    border: 1px solid var(--blood-red);
+    margin-right: 2px;
+    border-radius: 8px 8px 0 0;
+}
+
+.horror-wiki-theme .vectorTabs li a {
+    color: var(--bone-white);
+    text-shadow: 1px 1px 2px var(--shadow-black);
+    font-weight: bold;
+    padding: 8px 16px;
+}
+
+.horror-wiki-theme .vectorTabs li:hover {
+    background: linear-gradient(to bottom, var(--blood-red), var(--dark-red));
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+.horror-wiki-theme .vectorTabs li.selected {
+    background: var(--blood-red);
+    border-bottom: none;
+}
+
+/* Sidebar */
+.horror-wiki-theme #mw-panel {
+    background: rgba(13, 13, 13, 0.9);
+    border-right: 2px solid var(--blood-red);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.horror-wiki-theme #mw-panel .portal {
+    background: linear-gradient(to bottom, var(--mist-gray), var(--shadow-black));
+    border: 1px solid var(--blood-red);
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.horror-wiki-theme #mw-panel .portal h3 {
+    background: var(--blood-red);
+    color: var(--bone-white);
+    font-weight: bold;
+    text-align: center;
+    padding: 8px;
+    margin: 0;
+    border-radius: 5px 5px 0 0;
+    text-shadow: 1px 1px 2px var(--shadow-black);
+}
+
+.horror-wiki-theme #mw-panel .portal .body ul li a {
+    color: var(--bone-white);
+    text-decoration: none;
+    display: block;
+    padding: 5px 10px;
+    border-bottom: 1px solid rgba(139, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.horror-wiki-theme #mw-panel .portal .body ul li a:hover {
+    background: var(--blood-red);
+    color: var(--bone-white);
+    padding-left: 15px;
+}
+
+/* Content Areas */
+.horror-wiki-theme h1, 
+.horror-wiki-theme h2, 
+.horror-wiki-theme h3, 
+.horror-wiki-theme h4, 
+.horror-wiki-theme h5, 
+.horror-wiki-theme h6 {
+    color: var(--blood-red);
+    font-family: 'Creepster', serif;
+    text-shadow: 2px 2px 4px var(--shadow-black);
+    border-bottom: 2px solid var(--blood-red);
+    padding-bottom: 5px;
+}
+
+.horror-wiki-theme h1 {
+    font-size: 2.5em;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.horror-wiki-theme a {
+    color: var(--accent-orange);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.horror-wiki-theme a:hover {
+    color: var(--blood-red);
+    text-shadow: 0 0 5px var(--blood-red);
+}
+
+.horror-wiki-theme a:visited {
+    color: #CC6600;
+}
+
+/* Tables */
+.horror-wiki-theme table {
+    background: rgba(45, 45, 45, 0.9);
+    border: 2px solid var(--blood-red);
+    border-collapse: collapse;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.horror-wiki-theme table th {
+    background: var(--blood-red);
+    color: var(--bone-white);
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.horror-wiki-theme table td {
+    padding: 8px;
+    border: 1px solid rgba(139, 0, 0, 0.5);
+}
+
+.horror-wiki-theme table tr:nth-child(even) {
+    background: rgba(26, 10, 10, 0.5);
+}
+
+.horror-wiki-theme table tr:hover {
+    background: rgba(139, 0, 0, 0.2);
+}
+
+/* Forms and Input */
+.horror-wiki-theme input[type="text"],
+.horror-wiki-theme input[type="search"],
+.horror-wiki-theme textarea,
+.horror-wiki-theme select {
+    background: var(--shadow-black);
+    border: 2px solid var(--blood-red);
+    color: var(--bone-white);
+    padding: 8px;
+    border-radius: 5px;
+}
+
+.horror-wiki-theme input[type="text"]:focus,
+.horror-wiki-theme input[type="search"]:focus,
+.horror-wiki-theme textarea:focus {
+    border-color: var(--accent-orange);
+    box-shadow: 0 0 10px rgba(255, 69, 0, 0.5);
+}
+
+.horror-wiki-theme button,
+.horror-wiki-theme input[type="submit"] {
+    background: linear-gradient(to bottom, var(--blood-red), var(--dark-red));
+    border: none;
+    color: var(--bone-white);
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.horror-wiki-theme button:hover {
+    background: linear-gradient(to bottom, var(--accent-orange), #CC4400);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Horror-specific Components */
+.horror-content-warning {
+    background: linear-gradient(45deg, var(--warning-yellow), #B8860B);
+    border: 3px solid #DAA520;
+    color: var(--shadow-black);
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.5);
+}
+
+.horror-content-warning .warning-header {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.horror-content-warning .warning-accept {
+    background: var(--blood-red);
+    color: var(--bone-white);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.horror-rating-widget {
+    background: rgba(45, 45, 45, 0.9);
+    border: 2px solid var(--blood-red);
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 10px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.horror-rating-widget .rating-title {
+    color: var(--blood-red);
+    font-size: 1.3em;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 2px var(--shadow-black);
+}
+
+.rating-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 8px 0;
+    padding: 5px;
+}
+
+.rating-label {
+    color: var(--bone-white);
+    font-weight: bold;
+    width: 40%;
+}
+
+.rating-bar {
+    display: flex;
+    gap: 3px;
+}
+
+.rating-skull {
+    font-size: 1.2em;
+    opacity: 0.3;
+    transition: all 0.3s ease;
+}
+
+.rating-skull.active {
+    opacity: 1;
+    filter: drop-shadow(0 0 3px var(--blood-red));
+}
+
+.horror-spoiler {
+    background: rgba(13, 13, 13, 0.8);
+    border: 2px dashed var(--blood-red);
+    margin: 10px 0;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.spoiler-warning {
+    background: var(--blood-red);
+    color: var(--bone-white);
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.spoiler-content {
+    display: none;
+    padding: 15px;
+}
+
+.spoiler-content.revealed {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Footer */
+.horror-wiki-theme #footer {
+    background: var(--shadow-black);
+    border-top: 2px solid var(--blood-red);
+    color: var(--bone-white);
+    padding: 20px;
+    text-align: center;
+}
+
+/* Custom Navigation Additions */
+.horror-nav-item {
+    background: var(--blood-red) !important;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 5px var(--blood-red); }
+    50% { box-shadow: 0 0 15px var(--blood-red); }
+    100% { box-shadow: 0 0 5px var(--blood-red); }
+}
+
+.horror-create-page {
+    background: var(--accent-orange) !important;
+    color: var(--bone-white) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .horror-wiki-theme #content {
+        margin: 10px;
+        padding: 15px;
+    }
+    
+    .rating-row {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .rating-label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}
+
+/* Additional atmospheric effects */
+.horror-wiki-theme::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="1" fill="rgba(139,0,0,0.1)"/><circle cx="80" cy="40" r="0.5" fill="rgba(139,0,0,0.1)"/><circle cx="40" cy="80" r="1.5" fill="rgba(139,0,0,0.1)"/></svg>') repeat;
+    pointer-events: none;
+    z-index: -1;
+    animation: float 20s infinite linear;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    100% { transform: translateY(-100px); }
+}
