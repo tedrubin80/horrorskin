@@ -15,11 +15,11 @@
 	},
 	"ValidSkinNames": {
 		"horror": {
-			"class": "skinhorror",
+			"class": "SkinHorror",
 			"args": [
 				{
 					"name": "horror",
-					"template": "horrortemplate"
+					"template": "HorrorTemplate"
 				}
 			]
 		}
@@ -29,15 +29,15 @@
 			"i18n"
 		]
 	},
-"AutoloadClasses": {
-    "skinhorror": "includes/skinhorror.php",
-    "horrortemplate": "includes/horrortemplate.php"
-},
+	"AutoloadClasses": {
+		"SkinHorror": "includes/skinhorror.php",
+		"HorrorTemplate": "includes/horrortemplate.php"
 	},
 	"ResourceModules": {
 		"skins.horror": {
 			"styles": [
-                    "resources/horror.css"			],
+				"resources/horror.css"
+			],
 			"targets": [
 				"desktop",
 				"mobile"

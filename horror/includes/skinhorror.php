@@ -1,3 +1,70 @@
+=== skin.json ===
+{
+	"name": "horror",
+	"namemsg": "skinname-horror", 
+	"version": "1.0.0",
+	"author": [
+		"Horror Wiki Community"
+	],
+	"url": "https://horrorfandoms.info",
+	"description": "A dark horror-themed skin for MediaWiki",
+	"descriptionmsg": "horror-skin-desc",
+	"license-name": "GPL-2.0-or-later",
+	"type": "skin",
+	"requires": {
+		"MediaWiki": ">= 1.35.0"
+	},
+	"ValidSkinNames": {
+		"horror": {
+			"class": "SkinHorror",
+			"args": [
+				{
+					"name": "horror",
+					"template": "HorrorTemplate"
+				}
+			]
+		}
+	},
+	"MessagesDirs": {
+		"horror": [
+			"i18n"
+		]
+	},
+	"AutoloadClasses": {
+		"SkinHorror": "includes/skinhorror.php",
+		"HorrorTemplate": "includes/horrortemplate.php"
+	},
+	"ResourceModules": {
+		"skins.horror": {
+			"styles": [
+				"resources/horror.css"
+			],
+			"targets": [
+				"desktop",
+				"mobile"
+			]
+		},
+		"skins.horror.js": {
+			"scripts": [
+				"resources/horror.js"
+			],
+			"dependencies": [
+				"jquery"
+			],
+			"targets": [
+				"desktop",
+				"mobile"
+			]
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "",
+		"remoteExtPath": "horror"
+	},
+	"manifest_version": 2
+}
+
+=== skinhorror.php ===
 <?php
 /**
  * SkinHorror - Main Horror skin class for MediaWiki
@@ -6,9 +73,7 @@
  * @ingroup Skins
  */
 
-use MediaWiki\MediaWikiServices;
-
-class SkinHorror extends SkinMustache {
+class SkinHorror extends SkinTemplate {
     
     /**
      * @var string
@@ -18,7 +83,7 @@ class SkinHorror extends SkinMustache {
     /**
      * @var string
      */
-    public $stylename = 'Horror';
+    public $stylename = 'horror';
     
     /**
      * @var string
@@ -54,217 +119,242 @@ class SkinHorror extends SkinMustache {
         
         return $modules;
     }
+}
+
+=== horrortemplate.php ===
+<?php
+/**
+ * HorrorTemplate - Template class for Horror skin
+ * 
+ * @file
+ * @ingroup Skins
+ */
+
+class HorrorTemplate extends BaseTemplate {
     
     /**
-     * Add horror-specific body classes
+     * Main template function
      */
-    public function addToBodyAttributes( $out, &$bodyAttrs ) {
-        parent::addToBodyAttributes( $out, $bodyAttrs );
+    public function execute() {
+        $this->html( 'headelement' );
+        ?>
         
-        // Add horror theme class
-        $bodyAttrs['class'] .= ' horror-skin-theme';
-        
-        // Add page-specific classes
-        $title = $this->getTitle();
-        if ( $title ) {
-            $namespace = $title->getNamespace();
-            $bodyAttrs['class'] .= ' ns-' . $namespace;
+        <div id="horror-wrapper" class="horror-skin-wrapper">
             
-            // Add horror-specific classes based on page content
-            if ( $this->isHorrorContent() ) {
-                $bodyAttrs['class'] .= ' horror-content-page';
-            }
-        }
-    }
-    
-    /**
-     * Get template data for the skin
-     */
-    public function getTemplateData() {
-        $data = parent::getTemplateData();
+            <!-- Horror Header -->
+            <header id="horror-header" class="horror-header">
+                <div class="horror-header-content">
+                    
+                    <!-- Site Logo and Title -->
+                    <div class="horror-logo-section">
+                        <a href="<?php echo htmlspecialchars( $this->data['nav_urls']['mainpage']['href'] ) ?>" class="horror-logo">
+                            <?php if ( $this->data['logopath'] ) : ?>
+                                <img src="<?php $this->text( 'logopath' ) ?>" alt="<?php $this->text( 'sitename' ) ?>" />
+                            <?php endif; ?>
+                        </a>
+                        <div class="horror-site-info">
+                            <h1 class="horror-site-title">
+                                <a href="<?php echo htmlspecialchars( $this->data['nav_urls']['mainpage']['href'] ) ?>">
+                                    <?php $this->text( 'sitename' ) ?>
+                                </a>
+                            </h1>
+                            <div class="horror-site-tagline">Your Ultimate Horror Wiki</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Search Box -->
+                    <div class="horror-search-section">
+                        <form action="<?php $this->text( 'wgScript' ) ?>" id="horror-searchform">
+                            <input type="hidden" name="title" value="<?php $this->text( 'searchtitle' ) ?>" />
+                            <input id="horror-searchInput" name="search" type="search" 
+                                   placeholder="Search horror content..." 
+                                   value="<?php echo htmlspecialchars( $this->get( 'search', '' ) ) ?>" />
+                            <button type="submit" class="horror-search-btn">
+                                <span class="search-icon">🔍</span>
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="horror-user-section">
+                        <?php if ( $this->getSkin()->getUser()->isRegistered() ) : ?>
+                            <div class="horror-user-menu">
+                                <span class="user-name">👤 <?php echo htmlspecialchars( $this->getSkin()->getUser()->getName() ) ?></span>
+                                <div class="user-dropdown">
+                                    <a href="<?php echo htmlspecialchars( $this->getSkin()->getUser()->getUserPage()->getLocalURL() ) ?>">User Page</a>
+                                    <a href="<?php echo htmlspecialchars( SpecialPage::getTitleFor( 'Preferences' )->getLocalURL() ) ?>">Preferences</a>
+                                    <a href="<?php echo htmlspecialchars( SpecialPage::getTitleFor( 'Userlogout' )->getLocalURL() ) ?>">Logout</a>
+                                </div>
+                            </div>
+                        <?php else : ?>
+                            <div class="horror-login-section">
+                                <a href="<?php echo htmlspecialchars( SpecialPage::getTitleFor( 'Userlogin' )->getLocalURL() ) ?>" class="horror-login-btn">Login</a>
+                                <a href="<?php echo htmlspecialchars( SpecialPage::getTitleFor( 'CreateAccount' )->getLocalURL() ) ?>" class="horror-register-btn">Register</a>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                    
+                </div>
+                
+                <!-- Horror Navigation -->
+                <nav class="horror-navigation">
+                    <div class="horror-nav-content">
+                        
+                        <!-- Main Navigation -->
+                        <div class="horror-main-nav">
+                            <a href="/wiki/Special:AllPages" class="horror-nav-item">🎭 Horror Hub</a>
+                            <a href="/wiki/Special:PopularPages" class="horror-nav-item">💀 Popular Pages</a>
+                            <a href="/wiki/Special:Categories" class="horror-nav-item">🗂️ Categories</a>
+                            <a href="/wiki/Special:RecentChanges" class="horror-nav-item">🕐 Recent Changes</a>
+                            <a href="/wiki/Special:Random" class="horror-nav-item">🎲 Random Page</a>
+                        </div>
+                        
+                        <!-- Action Navigation -->
+                        <div class="horror-action-nav">
+                            <?php if ( $this->getSkin()->getUser()->isRegistered() ) : ?>
+                                <a href="/wiki/Special:CreatePage" class="horror-create-btn">✚ Create Horror Page</a>
+                            <?php endif; ?>
+                        </div>
+                        
+                    </div>
+                </nav>
+                
+            </header>
+            
+            <!-- Main Content Area -->
+            <div id="horror-main" class="horror-main-content">
+                
+                <!-- Sidebar -->
+                <aside id="horror-sidebar" class="horror-sidebar">
+                    
+                    <!-- Horror Categories -->
+                    <div class="horror-sidebar-section">
+                        <h3 class="sidebar-header">🎭 Horror Categories</h3>
+                        <ul class="horror-category-list">
+                            <li><a href="/wiki/Category:Horror_Movies">🎬 Horror Movies</a></li>
+                            <li><a href="/wiki/Category:Horror_Books">📚 Horror Books</a></li>
+                            <li><a href="/wiki/Category:Horror_Games">🎮 Horror Games</a></li>
+                            <li><a href="/wiki/Category:Creepypasta">📝 Creepypasta</a></li>
+                            <li><a href="/wiki/Category:Urban_Legends">🏚️ Urban Legends</a></li>
+                            <li><a href="/wiki/Category:Horror_Characters">👹 Horror Characters</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- MediaWiki Sidebar -->
+                    <?php 
+                    $sidebar = $this->getSidebar();
+                    foreach ( $sidebar as $boxName => $box ) : ?>
+                        <?php if ( $boxName !== 'SEARCH' && $boxName !== 'TOOLBOX' ) : ?>
+                            <div class="horror-sidebar-section">
+                                <h3 class="sidebar-header"><?php echo htmlspecialchars( $box['header'] ?? $boxName ) ?></h3>
+                                <?php if ( is_array( $box['content'] ?? null ) ) : ?>
+                                    <ul class="sidebar-list">
+                                        <?php foreach ( $box['content'] as $key => $item ) : ?>
+                                            <li>
+                                                <a href="<?php echo htmlspecialchars( $item['href'] ) ?>">
+                                                    <?php echo htmlspecialchars( $item['text'] ) ?>
+                                                </a>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                    
+                    <!-- Tools -->
+                    <div class="horror-sidebar-section">
+                        <h3 class="sidebar-header">🔧 Tools</h3>
+                        <ul class="sidebar-list">
+                            <?php 
+                            if ( isset( $sidebar['TOOLBOX']['content'] ) ) :
+                                foreach ( $sidebar['TOOLBOX']['content'] as $key => $item ) : ?>
+                                    <li>
+                                        <a href="<?php echo htmlspecialchars( $item['href'] ) ?>">
+                                            <?php echo htmlspecialchars( $item['text'] ) ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach;
+                            endif; ?>
+                        </ul>
+                    </div>
+                    
+                </aside>
+                
+                <!-- Content Area -->
+                <main id="horror-content" class="horror-content">
+                    
+                    <!-- Page Title -->
+                    <div class="horror-page-header">
+                        <h1 class="horror-page-title"><?php $this->html( 'title' ) ?></h1>
+                        
+                        <!-- Page Actions -->
+                        <div class="horror-page-actions">
+                            <?php foreach ( $this->data['content_navigation']['views'] ?? [] as $key => $item ) : ?>
+                                <a href="<?php echo htmlspecialchars( $item['href'] ) ?>" 
+                                   class="horror-page-action <?php echo $item['class'] ?? '' ?>">
+                                    <?php echo htmlspecialchars( $item['text'] ) ?>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    
+                    <!-- Main Page Content -->
+                    <div class="horror-page-content">
+                        <?php $this->html( 'bodytext' ) ?>
+                    </div>
+                    
+                    <!-- Category Links -->
+                    <?php if ( $this->data['catlinks'] ) : ?>
+                        <div class="horror-categories">
+                            <?php $this->html( 'catlinks' ) ?>
+                        </div>
+                    <?php endif; ?>
+                    
+                </main>
+                
+            </div>
+            
+            <!-- Horror Footer -->
+            <footer id="horror-footer" class="horror-footer">
+                <div class="horror-footer-content">
+                    
+                    <div class="footer-section">
+                        <h4>🎭 <?php $this->text( 'sitename' ) ?></h4>
+                        <p>Your ultimate destination for horror movies, books, games, and legends.</p>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h4>🔗 Quick Links</h4>
+                        <ul>
+                            <li><a href="/wiki/Special:About">About</a></li>
+                            <li><a href="/wiki/Special:Contact">Contact</a></li>
+                            <li><a href="/wiki/Special:PrivacyPolicy">Privacy</a></li>
+                            <li><a href="/wiki/Help:Contents">Help</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h4>📊 Statistics</h4>
+                        <ul>
+                            <li><a href="/wiki/Special:Statistics">Wiki Stats</a></li>
+                            <li><a href="/wiki/Special:RecentChanges">Recent Changes</a></li>
+                            <li><a href="/wiki/Special:NewPages">New Pages</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-copyright">
+                        <p>&copy; <?php echo date('Y') ?> <?php $this->text( 'sitename' ) ?>. Powered by MediaWiki.</p>
+                    </div>
+                    
+                </div>
+            </footer>
+            
+        </div>
         
-        // Add horror-specific data
-        $data['horror-navigation'] = $this->buildHorrorNavigation();
-        $data['horror-sidebar'] = $this->buildHorrorSidebar();
-        $data['horror-header'] = $this->buildHorrorHeader();
-        $data['horror-footer'] = $this->buildHorrorFooter();
-        
-        // Add content warnings if needed
-        if ( $this->shouldShowContentWarnings() ) {
-            $data['content-warnings'] = $this->getContentWarnings();
-        }
-        
-        return $data;
-    }
-    
-    /**
-     * Build horror-specific navigation
-     */
-    private function buildHorrorNavigation() {
-        $navigation = [];
-        
-        // Horror-specific navigation items
-        $navigation['horror-hub'] = [
-            'text' => '🎭 Horror Hub',
-            'href' => SpecialPage::getTitleFor( 'HorrorDashboard' )->getLocalURL(),
-            'class' => 'horror-nav-item'
-        ];
-        
-        $navigation['top-rated'] = [
-            'text' => '💀 Top Rated',
-            'href' => SpecialPage::getTitleFor( 'HorrorRatings' )->getLocalURL(),
-            'class' => 'horror-nav-item'
-        ];
-        
-        $navigation['browse-categories'] = [
-            'text' => '🗂️ Categories',
-            'href' => SpecialPage::getTitleFor( 'Categories' )->getLocalURL(),
-            'class' => 'horror-nav-item'
-        ];
-        
-        // Add create page link if user is logged in
-        if ( $this->getUser()->isRegistered() ) {
-            $navigation['create-horror'] = [
-                'text' => '✚ Create Horror Page',
-                'href' => '#',
-                'class' => 'horror-create-page-btn',
-                'id' => 'horror-create-page'
-            ];
-        }
-        
-        return $navigation;
-    }
-    
-    /**
-     * Build horror-specific sidebar
-     */
-    private function buildHorrorSidebar() {
-        $sidebar = [];
-        
-        // Horror categories
-        $sidebar['horror-categories'] = [
-            'header' => '🎭 Horror Categories',
-            'items' => [
-                [ 'text' => '🎬 Horror Movies', 'href' => '/wiki/Category:Horror_Movies' ],
-                [ 'text' => '📚 Horror Books', 'href' => '/wiki/Category:Horror_Books' ],
-                [ 'text' => '🎮 Horror Games', 'href' => '/wiki/Category:Horror_Games' ],
-                [ 'text' => '📝 Creepypasta', 'href' => '/wiki/Category:Creepypasta' ],
-                [ 'text' => '🏚️ Urban Legends', 'href' => '/wiki/Category:Urban_Legends' ],
-                [ 'text' => '👹 Horror Characters', 'href' => '/wiki/Category:Horror_Characters' ]
-            ]
-        ];
-        
-        // Recent horror content
-        $sidebar['recent-horror'] = [
-            'header' => '🕐 Recent Horror',
-            'items' => $this->getRecentHorrorPages()
-        ];
-        
-        return $sidebar;
-    }
-    
-    /**
-     * Build horror header
-     */
-    private function buildHorrorHeader() {
-        return [
-            'site-title' => $this->getConfig()->get( 'Sitename' ),
-            'site-tagline' => 'Your Ultimate Horror Wiki',
-            'search-placeholder' => 'Search horror content...',
-            'user-menu' => $this->buildUserMenu()
-        ];
-    }
-    
-    /**
-     * Build horror footer
-     */
-    private function buildHorrorFooter() {
-        return [
-            'copyright' => '© ' . date('Y') . ' ' . $this->getConfig()->get( 'Sitename' ),
-            'tagline' => 'Powered by MediaWiki & Horror Community',
-            'links' => [
-                [ 'text' => 'About', 'href' => '/wiki/About' ],
-                [ 'text' => 'Contact', 'href' => '/wiki/Contact' ],
-                [ 'text' => 'Privacy', 'href' => '/wiki/Privacy_Policy' ],
-                [ 'text' => 'Terms', 'href' => '/wiki/Terms_of_Service' ]
-            ]
-        ];
-    }
-    
-    /**
-     * Check if current page contains horror content
-     */
-    private function isHorrorContent() {
-        $title = $this->getTitle();
-        if ( !$title ) return false;
-        
-        // Check if page is in horror-related categories
-        $horrorCategories = [
-            'Horror_Movies', 'Horror_Books', 'Horror_Games',
-            'Creepypasta', 'Urban_Legends', 'Horror_Characters'
-        ];
-        
-        foreach ( $horrorCategories as $category ) {
-            if ( $title->getNamespace() === NS_CATEGORY && 
-                 strpos( $title->getText(), str_replace('_', ' ', $category) ) !== false ) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
-    /**
-     * Check if content warnings should be shown
-     */
-    private function shouldShowContentWarnings() {
-        return $this->getConfig()->get( 'HorrorSkinEnableContentWarnings' ) && 
-               $this->isHorrorContent();
-    }
-    
-    /**
-     * Get content warnings for current page
-     */
-    private function getContentWarnings() {
-        // This would integrate with the database if available
-        return [
-            'gore' => '🩸 Contains graphic violence',
-            'jump' => '😱 Contains jump scares',
-            'psychological' => '🧠 Psychological horror content'
-        ];
-    }
-    
-    /**
-     * Get recent horror pages
-     */
-    private function getRecentHorrorPages() {
-        // Simple implementation - can be enhanced with database queries
-        return [
-            [ 'text' => 'The Exorcist', 'href' => '/wiki/The_Exorcist' ],
-            [ 'text' => 'Halloween (1978)', 'href' => '/wiki/Halloween_(1978)' ],
-            [ 'text' => 'Stephen King', 'href' => '/wiki/Stephen_King' ],
-            [ 'text' => 'Silent Hill', 'href' => '/wiki/Silent_Hill' ],
-            [ 'text' => 'The Shining', 'href' => '/wiki/The_Shining' ]
-        ];
-    }
-    
-    /**
-     * Build user menu
-     */
-    private function buildUserMenu() {
-        $user = $this->getUser();
-        
-        if ( $user->isRegistered() ) {
-            return [
-                'username' => $user->getName(),
-                'user_page' => $user->getUserPage()->getLocalURL(),
-                'logout' => SpecialPage::getTitleFor( 'Userlogout' )->getLocalURL()
-            ];
-        } else {
-            return [
-                'login' => SpecialPage::getTitleFor( 'Userlogin' )->getLocalURL(),
-                'register' => SpecialPage::getTitleFor( 'CreateAccount' )->getLocalURL()
-            ];
-        }
+        <?php $this->printTrail() ?>
+        </body>
+        </html>
+        <?php
     }
 }

@@ -76,8 +76,8 @@ class HorrorTemplate extends BaseTemplate {
                         
                         <!-- Main Navigation -->
                         <div class="horror-main-nav">
-                            <a href="/wiki/Special:HorrorDashboard" class="horror-nav-item">🎭 Horror Hub</a>
-                            <a href="/wiki/Special:HorrorRatings" class="horror-nav-item">💀 Top Rated</a>
+                            <a href="/wiki/Special:AllPages" class="horror-nav-item">🎭 Horror Hub</a>
+                            <a href="/wiki/Special:PopularPages" class="horror-nav-item">💀 Popular Pages</a>
                             <a href="/wiki/Special:Categories" class="horror-nav-item">🗂️ Categories</a>
                             <a href="/wiki/Special:RecentChanges" class="horror-nav-item">🕐 Recent Changes</a>
                             <a href="/wiki/Special:Random" class="horror-nav-item">🎲 Random Page</a>
@@ -86,7 +86,7 @@ class HorrorTemplate extends BaseTemplate {
                         <!-- Action Navigation -->
                         <div class="horror-action-nav">
                             <?php if ( $this->getSkin()->getUser()->isRegistered() ) : ?>
-                                <button id="horror-create-page" class="horror-create-btn">✚ Create Horror Page</button>
+                                <a href="/wiki/Special:CreatePage" class="horror-create-btn">✚ Create Horror Page</a>
                             <?php endif; ?>
                         </div>
                         
@@ -134,22 +134,19 @@ class HorrorTemplate extends BaseTemplate {
                         <?php endif; ?>
                     <?php endforeach; ?>
                     
-                    <!-- Tools -->
-                    <div class="horror-sidebar-section">
-                        <h3 class="sidebar-header">🔧 Tools</h3>
-                        <ul class="sidebar-list">
-                            <?php foreach ( $this->getToolbox() as $key => $item ) : ?>
-                                <li>
-                                    <a href="<?php echo htmlspecialchars( $item['href'] ) ?>">
-                                        <?php echo htmlspecialchars( $item['text'] ) ?>
-                                    </a>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                    
-                </aside>
-                
+                 <!-- Tools -->
+<div class="horror-sidebar-section">
+    <h3 class="sidebar-header">🔧 Tools</h3>
+    <ul class="sidebar-list">
+        <?php foreach ( $this->getSkin()->getToolbox() as $key => $item ) : ?>
+            <li>
+                <a href="<?php echo htmlspecialchars( $item['href'] ) ?>">
+                    <?php echo htmlspecialchars( $item['text'] ) ?>
+                </a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+</div>
                 <!-- Content Area -->
                 <main id="horror-content" class="horror-content">
                     
@@ -199,9 +196,9 @@ class HorrorTemplate extends BaseTemplate {
                     <div class="footer-section">
                         <h4>🔗 Quick Links</h4>
                         <ul>
-                            <li><a href="/wiki/About">About</a></li>
-                            <li><a href="/wiki/Contact">Contact</a></li>
-                            <li><a href="/wiki/Privacy_Policy">Privacy</a></li>
+                            <li><a href="/wiki/Special:About">About</a></li>
+                            <li><a href="/wiki/Special:Contact">Contact</a></li>
+                            <li><a href="/wiki/Special:PrivacyPolicy">Privacy</a></li>
                             <li><a href="/wiki/Help:Contents">Help</a></li>
                         </ul>
                     </div>
